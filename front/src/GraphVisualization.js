@@ -16,9 +16,12 @@ function GraphVisualization() {
       fetch("/api/push-relabel/primjer")
         .then((res) => res.json())
         .then((data) => {
+          const izvor = data.izvor;
+          const ponor = data.ponor;
           const nodes = Array.from({ length: data.brojVrhova }, (_, i) => ({
             id: i,
             label: i.toString(),
+            color: i === izvor ? "#ff0000" : i === ponor ? "#00ff00" : "#FFFFFF",
           }));
 
           const edges = data.bridovi.map((b) => ({
@@ -28,7 +31,7 @@ function GraphVisualization() {
             font: { align: "top" },
           }));
 
-          setGraphData({ nodes, edges });
+          setGraphData({ nodes, edges, izvor, ponor });
         })
         .catch((err) => console.error("Greška pri dohvatu grafa:", err));
     }
@@ -37,7 +40,11 @@ function GraphVisualization() {
   useEffect(() => {
     if (!graphData) return;
 
-    const { nodes, edges } = graphData;
+    const { nodes, edges, izvor, ponor } = graphData;
+    const updatedNodes = nodes.map((node) => ({
+      ...node,
+      color: node.id === izvor ? "#ff0000" : node.id === ponor ? "#00ff00" : "#FFFFFF", // Izvor crven, ponor zelen
+    }));
     const options = {
       physics: {
         enabled: true,
@@ -84,7 +91,7 @@ function GraphVisualization() {
       },
     };
 
-    const network = new Network(containerRef.current, { nodes, edges }, options);
+    const network = new Network(containerRef.current, { nodes: updatedNodes, edges }, options);
     network.on("stabilizationIterationsDone", () => {
       console.log("Fizikalna stabilizacija dovršena.");
       network.setOptions({ physics: { enabled: false } });
@@ -120,6 +127,7 @@ function GraphVisualization() {
     const nodes = Array.from({ length: customGraphData.brojVrhova }, (_, index) => ({
       id: index,
       label: index.toString(),
+      color: index === customGraphData.izvor ? "#ff0000" : index === customGraphData.ponor ? "#00ff00" : "#FFFFFF",
     }));
 
     const edges = customGraphData.bridovi.map((brid) => ({
@@ -129,7 +137,9 @@ function GraphVisualization() {
       font: { align: "top" },
     }));
 
-    setGraphData({ nodes, edges });
+    setGraphData({ nodes, edges, izvor: customGraphData.izvor,
+      ponor: customGraphData.ponor
+     });
     setCustomGraph(false); // Zatvori formu
   };
 
@@ -165,7 +175,12 @@ function GraphVisualization() {
         />
       )}
       {showSimulation && (
-        <Simulacija networkInstance={networkInstance} graphData={graphData} />
+        <Simulacija 
+          networkInstance={networkInstance} 
+          graphData={graphData}
+          izvor={graphData?.izvor}
+          ponor={graphData?.ponor}
+         />
       )}
 
       <div className="graph-container">
