@@ -1,0 +1,92 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  background: linear-gradient(135deg, #fce3ec 25%, #d8f3dc 100%);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.decorative-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(90deg, rgba(255,255,255,0.3) 10%, transparent 90%),
+              linear-gradient(180deg, rgba(255,255,255,0.1) 20%, transparent 80%);
+  background-size: 200px 200px;
+  background-blend-mode: lighten;
+}
+
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; 
+  position: relative;
+}
+
+.welcome-content {
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
+  padding: 40px 60px;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: fadeIn 1s ease-in-out;
+  max-width: 600px;
+  width: 90%;
+  margin: auto;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.welcome-title {
+  font-size: 3.5rem;
+  color: #254e72;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.welcome-subtitle {
+  font-size: 1.2rem;
+  color: #1e5585ce;
+  margin-bottom: 2.5rem;
+  line-height: 1.5;
+}
+
+.algo-button {
+  display: inline-block;
+  padding: 14px 30px;
+  margin: 10px;
+  font-size: 1rem;
+  color: #1e5585ce;
+  background-color: #ffffff;
+  border: 2px solid #1e5585ce;
+  border-radius: 25px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+}
+
+.algo-button:hover {
+  background-color: #1e5585ce;
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+
+

@@ -1,0 +1,138 @@
+.main-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #f0f8ff;
+  height: 100vh;
+  width: 100vw;
+  padding-top: 30px;
+}
+
+.graph-title {
+  font-size: 2.5rem;
+  color: #254e72;
+  margin-bottom: 15px;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.create-graph-button,
+.simulation-button,
+.lock-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #1a617e;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.create-graph-button:hover,
+.simulation-button:hover,
+.lock-button:hover {
+  background-color: #207597;
+}
+
+.graph-container {
+  flex-grow: 1;
+  width: 90%;
+  max-height: 80%;
+  border: 1px solid #ccc;
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.graph {
+  width: 100%;
+  height: 100%;
+}
+
+.decorative-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(90deg, rgba(255,255,255,0.3) 10%, transparent 90%),
+              linear-gradient(180deg, rgba(255,255,255,0.1) 20%, transparent 80%);
+  background-size: 200px 200px;
+  background-blend-mode: lighten;
+}
+
+.custom-graph-input {
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.custom-graph-input h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.custom-graph-input input {
+  margin: 5px 0;
+  padding: 5px;
+  font-size: 1rem;
+}
+
+.custom-graph-input button {
+  margin: 5px;
+  padding: 5px 10px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #2b7ce9;
+  color: white;
+  cursor: pointer;
+}
+
+.custom-graph-input button:hover {
+  background-color: #1a56b3;
+}
+
+.simulacija-container {
+  margin: 10px;
+  text-align: center;
+}
+
+.simulation-button {
+  padding: 5px 15px;
+  font-size: 1.1rem;
+  margin: 5px;
+  background-color: #1a617e;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.simulation-button:hover {
+  background-color: #207597;
+}
+
+  

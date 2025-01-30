@@ -1,0 +1,19 @@
+.simulacija-container {
+    margin: 10px;
+    text-align: center;
+  }
+  
+  .simulation-button {
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #1a617e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .simulation-button:hover {
+    background-color: #207597;
+  }
