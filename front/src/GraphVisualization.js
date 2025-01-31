@@ -21,7 +21,7 @@ function GraphVisualization() {
           const nodes = Array.from({ length: data.brojVrhova }, (_, i) => ({
             id: i,
             label: i.toString(),
-            color: i === izvor ? "#ff0000" : i === ponor ? "#00ff00" : "#FFFFFF",
+            color: i === izvor ? "#ffb3b3" : i === ponor ? "#b3ffb3" : "#FFFFFF",
           }));
 
           const edges = data.bridovi.map((b) => ({
@@ -43,7 +43,7 @@ function GraphVisualization() {
     const { nodes, edges, izvor, ponor } = graphData;
     const updatedNodes = nodes.map((node) => ({
       ...node,
-      color: node.id === izvor ? "#ff0000" : node.id === ponor ? "#00ff00" : "#FFFFFF", // Izvor crven, ponor zelen
+      color: node.id === izvor ? "#ffb3b3" : node.id === ponor ? "#b3ffb3" : "#FFFFFF", // Izvor crven, ponor zelen
     }));
     const options = {
       physics: {
@@ -127,7 +127,7 @@ function GraphVisualization() {
     const nodes = Array.from({ length: customGraphData.brojVrhova }, (_, index) => ({
       id: index,
       label: index.toString(),
-      color: index === customGraphData.izvor ? "#ff0000" : index === customGraphData.ponor ? "#00ff00" : "#FFFFFF",
+      color: index === customGraphData.izvor ? "#ffb3b3" : index === customGraphData.ponor ? "#b3ffb3" : "#FFFFFF",
     }));
 
     const edges = customGraphData.bridovi.map((brid) => ({
