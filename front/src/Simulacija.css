@@ -1,7 +1,9 @@
 .simulacija-container {
-    margin: 10px;
-    text-align: center;
-  }
+  margin: 10px auto 30px auto;
+  padding-bottom: 20px;
+  text-align: center;
+  min-height: 150px;
+}
   
   .simulation-button {
     margin: 5px;
@@ -17,3 +19,16 @@
   .simulation-button:hover {
     background-color: #207597;
   }
+
+  .korak-info {
+  font-size: 1.1rem;
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+.max-flow-info {
+  font-size: 1.2rem;
+  color: #1a1a1a;
+  margin-top: 10px;
+  font-weight: bold;
+}

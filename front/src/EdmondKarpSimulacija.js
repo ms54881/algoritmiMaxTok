@@ -152,11 +152,8 @@ function findTokLabel(bridovi, from, to) {
 
       {simulationSteps && (
         <div>
-          <p>
-          Korak {currentStepIndex + 1} od {simulationSteps.length} –{" "}
-             <strong>
-              {simulationSteps[currentStepIndex].akcija}
-              </strong>
+          <p className="korak-info">
+          Korak {currentStepIndex + 1} od {simulationSteps.length} – {simulationSteps[currentStepIndex].akcija}
           </p>
           <button className="simulation-button" onClick={handleNextStep}>
             Sljedeći korak
@@ -164,7 +161,7 @@ function findTokLabel(bridovi, from, to) {
           {currentStepIndex === simulationSteps.length - 1 && (
             <div>
               <h3>Simulacija završena!</h3>
-              {maxFlow !== null && <p>Maksimalni tok: {maxFlow}</p>}
+              {maxFlow !== null && <p className="max-flow-info"><strong>Maksimalni tok: {maxFlow}</strong></p>}
             </div>
           )}
         </div>
