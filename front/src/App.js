@@ -21,7 +21,7 @@ function WelcomePage() {
           Push-Relabel algoritam
         </a>
         <a href="/api/edmondkarp" className="algo-button">
-          Edmond-Karp algoritam
+          Edmonds-Karp algoritam
         </a>
         <a href="/api/dinic" className="algo-button">
           Dinicov algoritam

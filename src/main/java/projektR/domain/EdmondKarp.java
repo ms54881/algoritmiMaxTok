@@ -8,6 +8,7 @@ import java.util.Queue;
 
 import org.springframework.stereotype.Component;
 
+import ch.qos.logback.core.joran.sanity.Pair;
 import projektR.dto.KorakDTO;
 import projektR.dto.SimulacijaDTO;
 import projektR.dto.StanjeBridDTO;
@@ -16,6 +17,37 @@ import projektR.dto.StanjeBridDTO;
 public class EdmondKarp {
 	
 	public EdmondKarp() {
+	}
+	
+	private String formirajPut(int[] roditelj, int izvor, int ponor, int protokNaPutu) {
+	    List<Integer> put = new ArrayList<>();
+	    int trenutni = ponor;
+	    while (trenutni != -1) {
+	        put.add(0, trenutni);
+	        trenutni = roditelj[trenutni];
+	    }
+
+	    // Formatiraj u string: "0 → 1 → 3 → 5 (povećanje za 5)"
+	    StringBuilder sb = new StringBuilder();
+	    for (int i = 0; i < put.size(); i++) {
+	        sb.append(put.get(i));
+	        if (i < put.size() - 1) {
+	            sb.append(" → ");
+	        }
+	    }
+	    sb.append(" (povećanje toka za ").append(protokNaPutu).append(")");
+	    return "Povećavajući put pronađen BFS algoritmom: " + sb.toString();
+	}
+	
+	private List<List<Integer>> generirajPutParove(int[] roditelj, int izvor, int ponor) {
+	    List<List<Integer>> bridoviNaPutu = new ArrayList<>();
+	    int v = ponor;
+	    while (v != izvor) {
+	        int u = roditelj[v];
+	        bridoviNaPutu.add(0, List.of(u, v));  // dodaj na početak jer idemo od kraja
+	        v = u;
+	    }
+	    return bridoviNaPutu;
 	}
 
 	private int[] bfsRezidualni(Graf graf, int izvor, int ponor) {
@@ -108,10 +140,11 @@ public class EdmondKarp {
 	    /**
 	     * Snima trenutačno stanje bridova i vrhova (ako želite)
 	     */
-	    private KorakDTO snimiStanje(Graf graf, String akcija) {
+	    private KorakDTO snimiStanje(Graf graf, String akcija, List<List<Integer>> put) {
 	        KorakDTO korak = new KorakDTO();
 	        korak.setAkcija(akcija);
-
+	        korak.setPut(put);
+	        
 	        // Snimimo stanja bridova
 	        List<StanjeBridDTO> bridoviDTO = new ArrayList<>();
 	        for (Brid b : graf.bridovi) {
@@ -124,8 +157,6 @@ public class EdmondKarp {
 	        }
 	        korak.setStanjaBridova(bridoviDTO);
 
-	        // Ako želite i stanja vrhova, kreirajte listu VrhStanjeDTO
-	        // korak.setVrhovi(...) // ako je potrebno
 
 	        return korak;
 	    }
@@ -142,7 +173,9 @@ public class EdmondKarp {
 			
 			int protokNaPutu = augmentacija(graf, roditelj, izvor, ponor); //minimalni rezidualni kapacitet na putu
 			maksimalniTok += protokNaPutu;
-			koraci.add(snimiStanje(graf, "augmentacija puta i BFS"));
+			String opisKoraka = formirajPut(roditelj, izvor, ponor, protokNaPutu);
+			List<List<Integer>> put = generirajPutParove(roditelj, izvor, ponor);
+			koraci.add(snimiStanje(graf, opisKoraka, put));
 			
 		}
 		

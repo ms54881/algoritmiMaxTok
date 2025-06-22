@@ -8,6 +8,7 @@ public class KorakDTO {
 	private int aktivanVrh;
 	private List<StanjeBridDTO> stanjaBridova;
 	private List<StanjeVrhDTO> stanjaVrhova;
+	private List<List<Integer>> put;
 	
 	public KorakDTO(String akcija, int aktivanVrh, List<StanjeBridDTO> stanjaBridova, List<StanjeVrhDTO> stanjaVrhova) {
 		this.akcija = akcija;
@@ -51,5 +52,11 @@ public class KorakDTO {
 		this.stanjaVrhova = stanjaVrhova;
 	}
 	
+	public List<List<Integer>> getPut() {
+		return put;
+	}
 
+	public void setPut(List<List<Integer>> put) {
+		this.put = put;
+	}
 }

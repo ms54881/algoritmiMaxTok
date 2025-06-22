@@ -138,7 +138,7 @@ function DinicSimulacija({ networkInstance, graphData }) {
 
   useEffect(() => {
     handleSimulation();
-  }, []);
+  }, [handleSimulation]);
 
   return (
     <div className="simulacija-container">
