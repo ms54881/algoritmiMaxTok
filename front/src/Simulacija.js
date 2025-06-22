@@ -148,7 +148,7 @@ function Simulacija({ networkInstance, graphData }) {
           </button>
           {currentStepIndex === simulationSteps.length - 1 && (
             <div>
-              <h3>Simulacija završena!</h3>
+              <p className="simulation-finished">Simulacija završena!</p>
               {maxFlow !== null && <p>Maksimalni tok: {maxFlow}</p>}
             </div>
           )}

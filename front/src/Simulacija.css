@@ -1,34 +1,40 @@
 .simulacija-container {
-  margin: 10px auto 30px auto;
-  padding-bottom: 20px;
+  margin: 10px auto 10px auto; /* manji razmak dolje */
+  padding-bottom: 10px;         /* smanjen padding dolje */
   text-align: center;
-  min-height: 150px;
+  min-height: 100px;            /* manja visina */
 }
-  
-  .simulation-button {
-    margin: 5px;
-    padding: 10px 20px;
-    font-size: 1rem;
-    background-color: #1a617e;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .simulation-button:hover {
-    background-color: #207597;
-  }
 
-  .korak-info {
-  font-size: 1.1rem;
-  margin-top: 20px;
-  margin-bottom: 15px;
+.simulation-button {
+  margin: 10px auto;
+  padding: 10px 22px;
+  font-size: 1rem;
+  background-color: #1a617e;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.simulation-button:hover {
+  background-color: #207597;
+}
+
+.korak-info {
+  font-size: 1.05rem;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-weight: normal; /* maknuto bold */
+}
+
+.simulation-finished {
+  font-size: 1.05rem;
+  font-weight: normal; /* maknuto bold */
+  margin-top: 10px;
+  margin-bottom: 5px;
 }
 
 .max-flow-info {
   font-size: 1.2rem;
-  color: #1a1a1a;
-  margin-top: 10px;
   font-weight: bold;
 }

@@ -101,6 +101,7 @@ function findTokLabel(bridovi, from, to) {
 
       if (data.koraci && data.koraci.length > 0) {
         updateGraphWithStep(data.koraci[0]);
+        pathColorIndex.current++;
       }
     } catch (error) {
       console.error("Greška kod simulacije:", error);
