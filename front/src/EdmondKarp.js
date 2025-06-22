@@ -148,7 +148,7 @@ function EdmondKarp() {
   return (
     <div className="main-container">
       <div className="decorative-lines"></div>
-      <h1 className="graph-title">Edmond-Karp algoritam</h1>
+      <h1 className="graph-title">Edmonds-Karp algoritam</h1>
       <div className="button-group">
         <button
           className="create-graph-button"

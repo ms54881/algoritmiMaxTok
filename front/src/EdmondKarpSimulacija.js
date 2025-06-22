@@ -7,6 +7,7 @@ function EdmondKarpSimulacija({ networkInstance, graphData }) {
   const [maxFlow, setMaxFlow] = useState(null);
   const pathColors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"];
   const pathColorIndex = React.useRef(0);  // indeks trenutno korištene boje
+  const previousColoredEdges = React.useRef([]);
 
 const updateGraphWithStep = (korak) => {
   if (!networkInstance || !korak || !korak.stanjaBridova) return;
@@ -53,9 +54,11 @@ const updateGraphWithStep = (korak) => {
     arrows: "to",
   }));
 
+  previousColoredEdges.current = [...previousColoredEdges.current, ...aktivniBridovi];
+
   networkInstance.setData({
     nodes: updatedNodes,
-    edges: [...allEdges, ...aktivniBridovi],
+    edges: [...allEdges, ...previousColoredEdges.current],
   });
 };
 
