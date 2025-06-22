@@ -56,10 +56,21 @@ const updateGraphWithStep = (korak) => {
 
   previousColoredEdges.current = [...previousColoredEdges.current, ...aktivniBridovi];
 
-  networkInstance.setData({
-    nodes: updatedNodes,
-    edges: [...allEdges, ...previousColoredEdges.current],
-  });
+const allUpdatedEdges = [...allEdges]; // svi bridovi iz koraka
+
+// Dodaj aktivne bridove, ali ukloni duplikate po (from, to)
+const aktivneIds = aktivniBridovi.map(b => `${b.from}-${b.to}`);
+const stareBoje = previousColoredEdges.current.filter(
+  b => !aktivneIds.includes(`${b.from}-${b.to}`)
+);
+
+// Ažuriraj memoriju i stanje grafa
+previousColoredEdges.current = [...stareBoje, ...aktivniBridovi];
+
+networkInstance.setData({
+  nodes: updatedNodes,
+  edges: [...allUpdatedEdges, ...previousColoredEdges.current],
+});
 };
 
 function findTokLabel(bridovi, from, to) {
