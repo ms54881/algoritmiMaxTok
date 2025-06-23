@@ -1,5 +1,6 @@
 package projektR.domain;
 
+//klasa s osnovnim elementima brida: tok, kapacitet, te početni i krajnjiVrh
 public class Brid {
 	
 	int tok;

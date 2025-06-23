@@ -3,6 +3,7 @@ package projektR.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+//klasa s osnovnim elementima broj vrhova i listom vrhova i bridova
 public class Graf {
 	int brojVrhova;
 	List<Vrh> vrhovi;
@@ -19,15 +20,15 @@ public class Graf {
 	        bridovi = new ArrayList<>();
 
 	        for (int i = 0; i < brojVrhova; i++) {
-	        	Vrh v = new Vrh(0, 0);
+	        	Vrh v = new Vrh(0, 0); //vrhovi se prilikom poziva konstruktora postavljaju na 0,0 za push relabel algoritam
 	        	vrhovi.add(v);
 	        }
-	    }
+	 }
 
-	    public void dodajBrid(int pocetniVrh, int krajnjiVrh, int kapacitet) {
+	public void dodajBrid(int pocetniVrh, int krajnjiVrh, int kapacitet) {
 	    	Brid b = new Brid(0, kapacitet, pocetniVrh, krajnjiVrh);
-	        bridovi.add(b);
-	    }
+	        bridovi.add(b); //bridovi se ručno unose metodom dodaj brid
+	}
 
 	public int getBrojVrhova() {
 		return brojVrhova;
@@ -44,7 +45,4 @@ public class Graf {
 	public void setBridovi(List<Brid> bridovi) {
 		this.bridovi = bridovi;
 	}
-	
-	
-
 }
