@@ -34,7 +34,7 @@ function DinicSimulacija({ networkInstance, graphData }) {
   });
   // Defaultno svi bridovi sivi
   const allEdges = korak.stanjaBridova
-    .filter((b) => b.tok >= 0)
+    .filter((b) => b.tok > 0)
     .map((b) => {
       const newLabel = `${b.tok}/${b.kapacitet}`;
       return {
@@ -140,36 +140,6 @@ function findTokLabel(bridovi, from, to) {
       setCurrentStepIndex(nextIndex);
       updateGraphWithStep(simulationSteps[nextIndex]);
       pathColorIndex.current++;  // Svaki novi korak koristi novu boju
-    } else if(nextIndex === simulationSteps.length) {
-      setCurrentStepIndex(nextIndex);
-      const finalStep = simulationSteps[simulationSteps.length - 1];
-    const finalEdges = finalStep.stanjaBridova.map((b) => ({
-      from: b.pocetniVrh,
-      to: b.krajnjiVrh,
-      label: `${b.tok}/${b.kapacitet}`,
-      font: { align: "top", size: 20, color: "#000000" },
-      color: b.tok > 0 ? "green" : "#848484", // Zeleni bridovi za konačni tok
-      arrows: "to",
-    }));
-
-    const currentNodes = networkInstance.body.data.nodes.get();
-    const updatedNodes = currentNodes.map((node) => {
-      const{ id, label, ...rest} = node;
-      const position = networkInstance.getPosition(id);
-
-      return {
-        id, 
-        label,
-        x:position.x,
-        y:position.y,
-        ...rest,
-      };
-  });
-
-    networkInstance.setData({
-      nodes: updatedNodes,
-      edges: finalEdges,
-    });
     }
   };
 
@@ -177,27 +147,33 @@ function findTokLabel(bridovi, from, to) {
     handleSimulation();
   }, []);
 
-  return (
-    <div className="simulacija-container">
-
-      {simulationSteps && (
-        <div>
-          <p className="korak-info">
-          Korak {currentStepIndex + 1} od {simulationSteps.length} – {simulationSteps[currentStepIndex].akcija}
-          </p>
-          <button className="simulation-button" onClick={handleNextStep}>
-            Sljedeći korak
-          </button>
-          {currentStepIndex === simulationSteps.length - 1 && (
-            <div>
-              <h3>Simulacija završena!</h3>
-              {maxFlow !== null && <p className="max-flow-info"><strong>Maksimalni tok: {maxFlow}</strong></p>}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
+return (
+  <div className="simulacija-container">
+    {simulationSteps && (
+      <div>
+        {currentStepIndex < simulationSteps.length ? (
+          <>
+            <p className="korak-info">
+              Korak {currentStepIndex + 1} od {simulationSteps.length} – {simulationSteps[currentStepIndex].akcija}
+            </p>
+            <button className="simulation-button" onClick={handleNextStep}>
+              Sljedeći korak
+            </button>
+          </>
+        ) : (
+          <div className="simulation-end">
+            <p className="simulation-finished">Simulacija završena!</p>
+            {maxFlow !== null && (
+              <p className="max-flow-info">
+                <strong>Maksimalni tok: {maxFlow}</strong>
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+);
 }
 
 export default DinicSimulacija;

@@ -21,11 +21,14 @@ return "Razinski graf izgrađen BFS algoritmom u " + (maxRazina + 1) + " razina.
 	
 	private String formirajOpisAugmentacije(List<List<Integer>> put, int protok) {
 	    StringBuilder sb = new StringBuilder();
-	    for (int i = 0; i < put.size(); i++) {
-	        List<Integer> par = put.get(i);
-	        sb.append(par.get(0)).append(" → ").append(par.get(1));
-	        if (i < put.size() - 1) sb.append(" → ");
+	    sb.append(put.get(0).get(0));
+
+	    // Dodaj sve krajnje čvorove bridova
+	    for (List<Integer> par : put) {
+	        int to = par.get(1);
+	        sb.append(" → ").append(to);
 	    }
+
 	    sb.append(" (povećanje toka za ").append(protok).append(")");
 	    return "Povećavajući put pronađen DFS algoritmom: " + sb.toString();
 	}
