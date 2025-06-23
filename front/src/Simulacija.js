@@ -5,36 +5,55 @@ function Simulacija({ networkInstance, graphData }) {
   const [simulationSteps, setSimulationSteps] = useState(null);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [maxFlow, setMaxFlow] = useState(null);
+    const [simulacijaZavrsena, setSimulacijaZavrsena] = useState(false);
 
   const updateGraphWithStep = (korak) => {
     if (!networkInstance || !korak || !korak.stanjaBridova) return;
 
     const currentNodes = networkInstance.body.data.nodes.get();
-    const updatedNodes = currentNodes.map((node) => {
-      const{ id, label, ...rest} = node;
-      const position = networkInstance.getPosition(id);
+const updatedNodes = currentNodes.map((node) => {
+  const { id, ...rest } = node;
+  const position = networkInstance.getPosition(id);
+  const stanjeVrh = korak.stanjaVrhova?.[id]; // pristup visini i višku
+  const visina = stanjeVrh?.visina ?? "-";
+  const visak = stanjeVrh?.visakToka ?? "-";
 
-      return {
-        id, 
-        label,
-        x:position.x,
-        y:position.y,
-        ...rest,
-      };
+    const isAktivanVrh = parseInt(id, 10) === korak.aktivanVrh;
+    const bojaVrh =
+      korak.akcija === "promijeniVisinu" && isAktivanVrh
+        ? { background: "#ffaaaa", border: "#333" } // Crveni vrh kod relabel
+        : undefined;
+
+    return {
+      id,
+      label: `${id} (h=${visina}, e=${visak})`,
+      x: position.x,
+      y: position.y,
+      color: bojaVrh,
+      ...rest,
+    };
   });
+    const aktivniVrh = korak.aktivanVrh;
+  const aktivniBridovi = korak.stanjaBridova.filter(
+    (b) =>
+      korak.akcija === "guraj" &&
+      b.pocetniVrh === aktivniVrh &&
+      b.tok > 0
+  );
 
-    const newEdges = korak.stanjaBridova.map((b) => {
+  const newEdges = korak.stanjaBridova
+    .filter((b) => b.kapacitet > 0 || b.tok < 0)
+    .map((b) => {
       const newLabel = `${b.tok}/${b.kapacitet}`;
 
-      let color = "#848484";
-      if (b.kapacitet > 0) {
-        if(b.tok === b.kapacitet) {
-          color = "red"; //zasićeni bridovi
-        }else if(b.tok < 0) {
-          color = "blue";
-        } else {
-          color = "848484";
-        }
+      let color = "#848484"; // default: sivo
+
+      const isAktivanBrid = aktivniBridovi.some(
+        (ab) => ab.pocetniVrh === b.pocetniVrh && ab.krajnjiVrh === b.krajnjiVrh
+      );
+
+      if (isAktivanBrid) {
+        color = "#4fa3ff"; // plavi brid za push
       }
 
       return {
@@ -46,10 +65,12 @@ function Simulacija({ networkInstance, graphData }) {
         arrows: "to",
       };
     });
-    networkInstance.setData({ nodes: updatedNodes,
-                           edges: newEdges, 
-                          });
-  };
+
+  networkInstance.setData({
+    nodes: updatedNodes,
+    edges: newEdges,
+  });
+};
 
   const handleSimulation = async () => {
     try {
@@ -132,30 +153,34 @@ function Simulacija({ networkInstance, graphData }) {
     handleSimulation();
   }, []);
 
-  return (
-    <div className="simulacija-container">
-      {simulationSteps && (
-        <div>
-          <p>
-            Korak {currentStepIndex + 1} od {simulationSteps.length} –{" "}
-             <strong>
-              {simulationSteps[currentStepIndex].akcija}:{" "}aktivan{" "} vrh:{" "}
-              {simulationSteps[currentStepIndex].aktivanVrh}
-              </strong>
-          </p>
+return (
+  <div className="simulacija-container">
+    {simulationSteps && (
+      <div>
+        <p className="korak-info">
+          Korak {currentStepIndex + 1} od {simulationSteps.length} – {simulationSteps[currentStepIndex].akcija}
+        </p>
+
+        {!simulacijaZavrsena && (
           <button className="simulation-button" onClick={handleNextStep}>
             Sljedeći korak
           </button>
-          {currentStepIndex === simulationSteps.length - 1 && (
-            <div>
-              <p className="simulation-finished">Simulacija završena!</p>
-              {maxFlow !== null && <p>Maksimalni tok: {maxFlow}</p>}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
+        )}
+
+        {simulacijaZavrsena && (
+          <div className="simulation-end">
+            <p className="simulation-finished">Simulacija završena!</p>
+            {maxFlow !== null && (
+              <p className="max-flow-info">
+                <strong>Maksimalni tok: {maxFlow}</strong>
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+);
 }
   
   export default Simulacija;

@@ -16,7 +16,7 @@ public class Dinic {
                 .max()
                 .orElse(0);
 		String raz = " razine.";
-		if(maxRazina >= 5) {
+		if(maxRazina+1 >= 5) {
 			raz = " razina.";
 		}
 		
