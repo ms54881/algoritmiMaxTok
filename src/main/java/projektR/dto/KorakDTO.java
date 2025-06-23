@@ -1,6 +1,7 @@
 package projektR.dto;
 
 import java.util.List;
+import java.util.Map;
 
 public class KorakDTO {
 	
@@ -8,8 +9,9 @@ public class KorakDTO {
 	private int aktivanVrh;
 	private List<StanjeBridDTO> stanjaBridova;
 	private List<StanjeVrhDTO> stanjaVrhova;
-	private List<List<Integer>> put;
-	
+	private List<List<Integer>> put; //za edmonds-karp algoritam
+	private Map<Integer, Integer> razine; //za dinicov algoritam
+
 	public KorakDTO(String akcija, int aktivanVrh, List<StanjeBridDTO> stanjaBridova, List<StanjeVrhDTO> stanjaVrhova) {
 		this.akcija = akcija;
 		this.aktivanVrh = aktivanVrh;
@@ -58,5 +60,13 @@ public class KorakDTO {
 
 	public void setPut(List<List<Integer>> put) {
 		this.put = put;
+	}
+	
+	public Map<Integer, Integer> getRazine() {
+		return razine;
+	}
+
+	public void setRazine(Map<Integer, Integer> razine) {
+		this.razine = razine;
 	}
 }

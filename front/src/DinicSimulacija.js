@@ -5,52 +5,87 @@ function DinicSimulacija({ networkInstance, graphData }) {
   const [simulationSteps, setSimulationSteps] = useState(null);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [maxFlow, setMaxFlow] = useState(null);
+    const pathColors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"];
+    const pathColorIndex = React.useRef(0);  // indeks trenutno korištene boje
+    const previousColoredEdges = React.useRef([]);
 
   const updateGraphWithStep = (korak) => {
     if (!networkInstance || !korak || !korak.stanjaBridova) return;
-
-    console.log("Ažuriram graf za korak:", korak);
 
     const currentNodes = networkInstance.body.data.nodes.get();
     const updatedNodes = currentNodes.map((node) => {
       const{ id, label, ...rest} = node;
       const position = networkInstance.getPosition(id);
+      const razina = korak.razine?.[node.id];
+      const bojaRazine = razina === 0 ? "#aed6f1" :
+                     razina === 1 ? "#a9dfbf" :
+                     razina === 2 ? "#f9e79f" :
+                     razina === 3 ? "#f5b7b1" :
+                     razina >= 4 ? "#bb8fce" : "#d7dbdd";
+
 
       return {
-        id, 
-        label,
+        id: node.id, 
+        label: `${node.id} (L:${razina ?? "-"})`,
         x:position.x,
         y:position.y,
-        ...rest,
+        color: { background: bojaRazine, border: "#333" }
       };
   });
-  const newEdges = korak.stanjaBridova.map((b) => {
-    const newLabel = `${b.tok}/${b.kapacitet}`;
+  // Defaultno svi bridovi sivi
+  const allEdges = korak.stanjaBridova
+    .filter((b) => b.tok >= 0)
+    .map((b) => {
+      const newLabel = `${b.tok}/${b.kapacitet}`;
+      return {
+        from: b.pocetniVrh,
+        to: b.krajnjiVrh,
+        label: newLabel,
+        font: { align: "top", size: 20, color: "#000000" },
+        color: { color: "#848484", highlight: "#848484", hover: "#848484" },
+        arrows: "to",
+      };
+    });
 
-    let color = "#848484";
-    if (b.kapacitet > 0) {
-      if(b.tok === b.kapacitet) {
-        color = "red"; //zasićeni bridovi
-      }else if(b.tok < 0) {
-        color = "blue";
-      } else {
-        color = "848484";
-      }
-    }
+  // Ako postoji put u ovom koraku – oboji ga posebnom bojom
+  const aktivniPut = korak.put || [];
+  const boja = pathColors[pathColorIndex.current % pathColors.length];
 
-    return {
-      from: b.pocetniVrh,
-      to: b.krajnjiVrh,
-      label: newLabel,
-      font: { align: "top", size: 20, color: "#000000" },
-      color: { color, highlight: color, hover: color, opacity: 1.0 },
-      arrows: "to",
-    };
-  });
-  networkInstance.setData({ nodes: updatedNodes,
-                         edges: newEdges, 
-                        });
+  const aktivniBridovi = aktivniPut.map(([from, to]) => ({
+    from,
+    to,
+    label: `${findTokLabel(korak.stanjaBridova, from, to)}`,
+    font: { align: "top", size: 20, color: "#000000" },
+    color: { color: boja, highlight: boja, hover: boja },
+    width: 3,
+    arrows: "to",
+  }));
+
+  previousColoredEdges.current = [...previousColoredEdges.current, ...aktivniBridovi];
+
+const allUpdatedEdges = [...allEdges]; // svi bridovi iz koraka
+
+// Dodaj aktivne bridove, ali ukloni duplikate po (from, to)
+const aktivneIds = aktivniBridovi.map(b => `${b.from}-${b.to}`);
+const stareBoje = previousColoredEdges.current.filter(
+  b => !aktivneIds.includes(`${b.from}-${b.to}`)
+);
+
+// Ažuriraj memoriju i stanje grafa
+previousColoredEdges.current = [...stareBoje, ...aktivniBridovi];
+
+networkInstance.setData({
+  nodes: updatedNodes,
+  edges: [...allUpdatedEdges, ...previousColoredEdges.current],
+});
 };
+
+function findTokLabel(bridovi, from, to) {
+  const match = bridovi.find(
+    (b) => b.pocetniVrh === from && b.krajnjiVrh === to
+  );
+  return match ? `${match.tok}/${match.kapacitet}` : "";
+}
 
   const handleSimulation = async () => {
 
@@ -104,7 +139,9 @@ function DinicSimulacija({ networkInstance, graphData }) {
     if (nextIndex < simulationSteps.length) {
       setCurrentStepIndex(nextIndex);
       updateGraphWithStep(simulationSteps[nextIndex]);
+      pathColorIndex.current++;  // Svaki novi korak koristi novu boju
     } else if(nextIndex === simulationSteps.length) {
+      setCurrentStepIndex(nextIndex);
       const finalStep = simulationSteps[simulationSteps.length - 1];
     const finalEdges = finalStep.stanjaBridova.map((b) => ({
       from: b.pocetniVrh,
@@ -138,19 +175,15 @@ function DinicSimulacija({ networkInstance, graphData }) {
 
   useEffect(() => {
     handleSimulation();
-  }, [handleSimulation]);
+  }, []);
 
   return (
     <div className="simulacija-container">
 
       {simulationSteps && (
         <div>
-          <p>
-            Korak {currentStepIndex + 1} od {simulationSteps.length} -{" "}
-            <strong>
-              {simulationSteps[currentStepIndex].akcija}:{" "}aktivan{" "} vrh:{" "}
-              {simulationSteps[currentStepIndex].aktivanVrh}
-              </strong>
+          <p className="korak-info">
+          Korak {currentStepIndex + 1} od {simulationSteps.length} – {simulationSteps[currentStepIndex].akcija}
           </p>
           <button className="simulation-button" onClick={handleNextStep}>
             Sljedeći korak
@@ -158,7 +191,7 @@ function DinicSimulacija({ networkInstance, graphData }) {
           {currentStepIndex === simulationSteps.length - 1 && (
             <div>
               <h3>Simulacija završena!</h3>
-              {maxFlow !== null && <p>Maksimalni tok: {maxFlow}</p>}
+              {maxFlow !== null && <p className="max-flow-info"><strong>Maksimalni tok: {maxFlow}</strong></p>}
             </div>
           )}
         </div>
