@@ -8,6 +8,7 @@ function DinicSimulacija({ networkInstance, graphData }) {
     const pathColors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"];
     const pathColorIndex = React.useRef(0);  // indeks trenutno korištene boje
     const previousColoredEdges = React.useRef([]);
+    const [simulacijaZavrsena, setSimulacijaZavrsena] = useState(false);
 
   const updateGraphWithStep = (korak) => {
     if (!networkInstance || !korak || !korak.stanjaBridova) return;
@@ -34,7 +35,7 @@ function DinicSimulacija({ networkInstance, graphData }) {
   });
   // Defaultno svi bridovi sivi
   const allEdges = korak.stanjaBridova
-    .filter((b) => b.tok > 0)
+    .filter((b) => b.kapacitet > 0)
     .map((b) => {
       const newLabel = `${b.tok}/${b.kapacitet}`;
       return {
@@ -133,15 +134,27 @@ function findTokLabel(bridovi, from, to) {
     }
   };
 
-  const handleNextStep = () => {
-    if (!simulationSteps) return;
-    const nextIndex = currentStepIndex + 1;
-    if (nextIndex < simulationSteps.length) {
-      setCurrentStepIndex(nextIndex);
-      updateGraphWithStep(simulationSteps[nextIndex]);
-      pathColorIndex.current++;  // Svaki novi korak koristi novu boju
-    }
-  };
+const handleNextStep = () => {
+  if (!simulationSteps) return;
+
+  const nextIndex = currentStepIndex + 1;
+
+  // Ako smo na zadnjem prikazanom koraku, ne idemo dalje
+  if (nextIndex >= simulationSteps.length) {
+    setSimulacijaZavrsena(true);
+    return;
+  }
+
+  setCurrentStepIndex(nextIndex);
+  updateGraphWithStep(simulationSteps[nextIndex]);
+  pathColorIndex.current++;
+
+  // Ako upravo prikazujemo zadnji korak – označi završetak
+  if (nextIndex === simulationSteps.length - 1) {
+    setSimulacijaZavrsena(true);
+  }
+};
+
 
   useEffect(() => {
     handleSimulation();
@@ -151,16 +164,17 @@ return (
   <div className="simulacija-container">
     {simulationSteps && (
       <div>
-        {currentStepIndex < simulationSteps.length ? (
-          <>
-            <p className="korak-info">
-              Korak {currentStepIndex + 1} od {simulationSteps.length} – {simulationSteps[currentStepIndex].akcija}
-            </p>
-            <button className="simulation-button" onClick={handleNextStep}>
-              Sljedeći korak
-            </button>
-          </>
-        ) : (
+        <p className="korak-info">
+          Korak {currentStepIndex + 1} od {simulationSteps.length} – {simulationSteps[currentStepIndex].akcija}
+        </p>
+
+        {!simulacijaZavrsena && (
+          <button className="simulation-button" onClick={handleNextStep}>
+            Sljedeći korak
+          </button>
+        )}
+
+        {simulacijaZavrsena && (
           <div className="simulation-end">
             <p className="simulation-finished">Simulacija završena!</p>
             {maxFlow !== null && (

@@ -15,8 +15,13 @@ public class Dinic {
                 .filter(r -> r >= 0)
                 .max()
                 .orElse(0);
+		String raz = " razine.";
+		if(maxRazina >= 5) {
+			raz = " razina.";
+		}
+		
 
-return "Razinski graf izgrađen BFS algoritmom u " + (maxRazina + 1) + " razina.";
+return "Razinski graf izgrađen BFS algoritmom u " + (maxRazina + 1) + raz;
 	}
 	
 	private String formirajOpisAugmentacije(List<List<Integer>> put, int protok) {
