@@ -12,6 +12,8 @@ public class KorakDTO {
 	private List<List<Integer>> put; //za edmonds-karp algoritam
 	private Map<Integer, Integer> razine; //za dinicov algoritam
 	private String opis; //za Push Relabel
+	private Integer aktivanBridPocetni;//za Push Relabel
+	private Integer aktivanBridKrajnji;//za Push Relabel
 
 	public KorakDTO(String akcija, int aktivanVrh, List<StanjeBridDTO> stanjaBridova, List<StanjeVrhDTO> stanjaVrhova) {
 		this.akcija = akcija;
@@ -77,6 +79,22 @@ public class KorakDTO {
 
 	public void setOpis(String opis) {
 		this.opis = opis;
+	}
+	
+	public Integer getAktivanBridPocetni() {
+		return aktivanBridPocetni;
+	}
+
+	public void setAktivanBridPocetni(Integer aktivanBridPocetni) {
+		this.aktivanBridPocetni = aktivanBridPocetni;
+	}
+
+	public Integer getAktivanBridKrajnji() {
+		return aktivanBridKrajnji;
+	}
+
+	public void setAktivanBridKrajnji(Integer aktivanBridKrajnji) {
+		this.aktivanBridKrajnji = aktivanBridKrajnji;
 	}
 	
 	

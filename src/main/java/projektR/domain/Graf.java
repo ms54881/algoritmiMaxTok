@@ -8,6 +8,8 @@ public class Graf {
 	int brojVrhova;
 	List<Vrh> vrhovi;
 	List<Brid> bridovi = new ArrayList<>();
+	public Integer aktivanPocetni = null;
+	public Integer aktivanKrajnji = null;
 	
 	public Graf(int brojVrhova, List<Brid> bridovi) {
 		this.brojVrhova = brojVrhova;
@@ -45,4 +47,22 @@ public class Graf {
 	public void setBridovi(List<Brid> bridovi) {
 		this.bridovi = bridovi;
 	}
+
+	public Integer getAktivanPocetni() {
+		return aktivanPocetni;
+	}
+
+	public void setAktivanPocetni(Integer aktivanPocetni) {
+		this.aktivanPocetni = aktivanPocetni;
+	}
+
+	public Integer getAktivanKrajnji() {
+		return aktivanKrajnji;
+	}
+
+	public void setAktivanKrajnji(Integer aktivanKrajnji) {
+		this.aktivanKrajnji = aktivanKrajnji;
+	}
+	
+	
 }

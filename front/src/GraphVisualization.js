@@ -25,6 +25,7 @@ function GraphVisualization() {
           }));
 
           const edges = data.bridovi.map((b) => ({
+            id: `${b.pocetniVrh}-${b.krajnjiVrh}`,
             from: b.pocetniVrh,
             to: b.krajnjiVrh,
             label: b.kapacitet.toString(),
@@ -131,6 +132,7 @@ function GraphVisualization() {
     }));
 
     const edges = customGraphData.bridovi.map((brid) => ({
+      id: `${brid.pocetniVrh}-${brid.krajnjiVrh}`,
       from: parseInt(brid.pocetniVrh),
       to: parseInt(brid.krajnjiVrh),
       label: brid.kapacitet.toString(),

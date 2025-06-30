@@ -61,6 +61,9 @@ public class GrafPR {
                     graf.vrhovi.get(graf.bridovi.get(i).krajnjiVrh).visakToka += tok;
                     graf.bridovi.get(i).tok += tok;
                     suprotniTok(graf, i, tok);
+                    
+                    graf.setAktivanPocetni(graf.bridovi.get(i).pocetniVrh);
+                    graf.setAktivanKrajnji(graf.bridovi.get(i).krajnjiVrh);
                     return tok;
                 }
             }
@@ -102,6 +105,8 @@ public class GrafPR {
     	
     	if ("guraj".equals(akcija)) {
             korak.setOpis("Operacija PUSH – povećanje toka za " + povecanjeToka);
+            korak.setAktivanBridPocetni(graf.aktivanPocetni);
+            korak.setAktivanBridKrajnji(graf.aktivanKrajnji);
         } else if ("promijeniVisinu".equals(akcija)) {
             korak.setOpis("Operacija RELABEL – promjena visine vrha " + vrh);
         }

@@ -28,11 +28,12 @@ const updateGraphWithStep = (korak) => {
     const visak = stanjeVrh?.visakToka ?? "-";
 
     const isAktivanVrh = numericId === korak.aktivanVrh;
-    const bojaVrh = isAktivanVrh
-      ? korak.akcija === "promijeniVisinu"
-        ? { background: "#ffaaaa", border: "#333" }
-        : { background: "#ffd9b3", border: "#333" }
-      : undefined;
+const bojaVrh = isAktivanVrh
+  ? korak.akcija === "promijeniVisinu"
+    ? { background: "#ffaaaa", border: "#333" }
+    : { background: "#ffd9b3", border: "#333" }
+  : { background: "#FFFFFF", border: "#848484" }; // defaultna boja
+
 
     // label čvor postavljen malo iznad i udesno
     virtualLabelNodes.push({
@@ -56,36 +57,35 @@ const updateGraphWithStep = (korak) => {
   });
 
   const aktivniVrh = korak.aktivanVrh;
-  const aktivniBridovi = korak.stanjaBridova.filter(
-    (b) =>
+const aktivanBridPocetni = korak.aktivanBridPocetni;
+const aktivanBridKrajnji = korak.aktivanBridKrajnji;
+
+const newEdges = korak.stanjaBridova
+  .filter((b) => b.kapacitet > 0 || b.tok < 0)
+  .map((b) => {
+    const newLabel = `${b.tok}/${b.kapacitet}`;
+    let color = "#848484";
+
+    // Označi aktivni brid plavom ako odgovara trenutno korištenom brid-u u push koraku
+    const isAktivanBrid =
       korak.akcija === "guraj" &&
-      b.pocetniVrh === aktivniVrh &&
-      b.tok > 0
-  );
+      b.pocetniVrh === aktivanBridPocetni &&
+      b.krajnjiVrh === aktivanBridKrajnji;
 
-  const newEdges = korak.stanjaBridova
-    .filter((b) => b.kapacitet > 0 || b.tok < 0)
-    .map((b) => {
-      const newLabel = `${b.tok}/${b.kapacitet}`;
-      let color = "#848484";
+    if (isAktivanBrid) {
+      color = "#4fa3ff";
+    }
 
-      const isAktivanBrid = aktivniBridovi.some(
-        (ab) => ab.pocetniVrh === b.pocetniVrh && ab.krajnjiVrh === b.krajnjiVrh
-      );
-
-      if (isAktivanBrid) {
-        color = "#4fa3ff";
-      }
-
-      return {
-        from: b.pocetniVrh,
-        to: b.krajnjiVrh,
-        label: newLabel,
-        font: { align: "top", size: 20, color: "#000000" },
-        color: { color, highlight: color, hover: color, opacity: 1.0 },
-        arrows: "to",
-      };
-    });
+    return {
+      id: `${b.pocetniVrh}-${b.krajnjiVrh}`,
+      from: b.pocetniVrh,
+      to: b.krajnjiVrh,
+      label: newLabel,
+      font: { align: "top", size: 20, color: "#000000" },
+      color: { color, highlight: color, hover: color, opacity: 1.0 },
+      arrows: "to",
+    };
+  });
 
   // Update grafa
   networkInstance.body.data.nodes.update([...updatedNodes, ...virtualLabelNodes]);
