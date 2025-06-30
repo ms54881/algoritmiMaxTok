@@ -7,52 +7,55 @@ function Simulacija({ networkInstance, graphData }) {
   const [maxFlow, setMaxFlow] = useState(null);
     const [simulacijaZavrsena, setSimulacijaZavrsena] = useState(false);
 
-  const updateGraphWithStep = (korak) => {
-    if (!networkInstance || !korak || !korak.stanjaBridova) return;
+const updateGraphWithStep = (korak) => {
+  if (!networkInstance || !korak || !korak.stanjaBridova) return;
 
-    const currentNodes = networkInstance.body.data.nodes.get();
+  // 1. Makni sve stare label čvorove
+  const existingNodes = networkInstance.body.data.nodes.get();
+  const labelNodesToRemove = existingNodes.filter((n) => typeof n.id === "string" && n.id.startsWith("label_"));
+  networkInstance.body.data.nodes.remove(labelNodesToRemove.map((n) => n.id));
 
-    const virtualLabelNodes = [];
+  const virtualLabelNodes = [];
 
-const updatedNodes = currentNodes.map((node) => {
-  const { id, ...rest } = node;
-  const numericId = parseInt(id, 10);
-  const position = networkInstance.getPosition(id);
-  const stanjeVrh = korak.stanjaVrhova?.[numericId];
-  const visina = stanjeVrh?.visina ?? "-";
-  const visak = stanjeVrh?.visakToka ?? "-";
+  const updatedNodes = existingNodes.map((node) => {
+    const { id, ...rest } = node;
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) return node; // preskoči stare label_ čvorove
 
-  const isAktivanVrh = numericId === korak.aktivanVrh;
-  const bojaVrh = isAktivanVrh
-    ? korak.akcija === "promijeniVisinu"
-      ? { background: "#ffaaaa", border: "#333" }
-      : { background: "#ffd9b3", border: "#333" }
-    : undefined;
+    const position = networkInstance.getPosition(id);
+    const stanjeVrh = korak.stanjaVrhova?.[numericId];
+    const visina = stanjeVrh?.visina ?? "-";
+    const visak = stanjeVrh?.visakToka ?? "-";
 
-  // Dodaj virtualni čvor za prikaz visine i viška
-  virtualLabelNodes.push({
-    id: `label_${id}`,
-    label: `h=${visina}, e=${visak}`,
-    shape: "text",
-    physics: false,
-    x: position.x,
-    y: position.y - 40, // malo iznad čvora
-    font: { size: 16, color: "#333" },
+    const isAktivanVrh = numericId === korak.aktivanVrh;
+    const bojaVrh = isAktivanVrh
+      ? korak.akcija === "promijeniVisinu"
+        ? { background: "#ffaaaa", border: "#333" }
+        : { background: "#ffd9b3", border: "#333" }
+      : undefined;
+
+    // label čvor postavljen malo iznad i udesno
+    virtualLabelNodes.push({
+      id: `label_${id}`,
+      label: `h=${visina}, e=${visak}`,
+      shape: "text",
+      physics: false,
+      x: position.x + 25,
+      y: position.y - 40,
+      font: { size: 16, color: "#333" },
+    });
+
+    return {
+      id,
+      label: `${id}`,
+      x: position.x,
+      y: position.y,
+      color: bojaVrh,
+      ...rest,
+    };
   });
 
-  return {
-    id,
-    label: `${id}`,
-    title: `h=${visina}, e=${visak}`,
-    x: position.x,
-    y: position.y,
-    color: bojaVrh,
-    ...rest,
-  };
-});
-
   const aktivniVrh = korak.aktivanVrh;
-
   const aktivniBridovi = korak.stanjaBridova.filter(
     (b) =>
       korak.akcija === "guraj" &&
@@ -64,15 +67,14 @@ const updatedNodes = currentNodes.map((node) => {
     .filter((b) => b.kapacitet > 0 || b.tok < 0)
     .map((b) => {
       const newLabel = `${b.tok}/${b.kapacitet}`;
-
-      let color = "#848484"; // default: sivo
+      let color = "#848484";
 
       const isAktivanBrid = aktivniBridovi.some(
         (ab) => ab.pocetniVrh === b.pocetniVrh && ab.krajnjiVrh === b.krajnjiVrh
       );
 
       if (isAktivanBrid) {
-        color = "#4fa3ff"; // plavi brid za push
+        color = "#4fa3ff";
       }
 
       return {
@@ -85,13 +87,22 @@ const updatedNodes = currentNodes.map((node) => {
       };
     });
 
-    networkInstance.body.data.nodes.update([...updatedNodes, ...virtualLabelNodes]);
-    networkInstance.body.data.edges.update(newEdges);
+  // Update grafa
+  networkInstance.body.data.nodes.update([...updatedNodes, ...virtualLabelNodes]);
+  networkInstance.body.data.edges.update(newEdges);
 };
+
 
   const handleSimulation = async () => {
     try {
       if (!networkInstance) return;
+
+          const allEdges = networkInstance.body.data.edges.get();
+    const clearedEdges = allEdges.map(edge => ({
+      id: edge.id,
+      label: "", // makni početni kapacitet
+    }));
+    networkInstance.body.data.edges.update(clearedEdges);
 
       const brojVrhova = graphData.nodes.length;
       const bridovi = graphData.edges.map((e) => ({
