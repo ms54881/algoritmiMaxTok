@@ -67,10 +67,8 @@ const updatedNodes = currentNodes.map((node) => {
       };
     });
 
-  networkInstance.setData({
-    nodes: updatedNodes,
-    edges: newEdges,
-  });
+    networkInstance.body.data.nodes.update(updatedNodes);
+    networkInstance.body.data.edges.update(newEdges);
 };
 
   const handleSimulation = async () => {
