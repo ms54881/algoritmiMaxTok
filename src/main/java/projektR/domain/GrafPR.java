@@ -49,7 +49,7 @@ public class GrafPR {
         graf.bridovi.add(new Brid(0, tok, pocetniVrh, krajnjiVrh));
     }
 
-    public boolean guraj(Graf graf, int vrh) {
+    public int guraj(Graf graf, int vrh) {
         for (int i = 0; i < graf.bridovi.size(); i++) {
             if (graf.bridovi.get(i).pocetniVrh == vrh) {
                 if (graf.bridovi.get(i).tok == graf.bridovi.get(i).kapacitet)
@@ -61,11 +61,11 @@ public class GrafPR {
                     graf.vrhovi.get(graf.bridovi.get(i).krajnjiVrh).visakToka += tok;
                     graf.bridovi.get(i).tok += tok;
                     suprotniTok(graf, i, tok);
-                    return true;
+                    return tok;
                 }
             }
         }
-        return false; //guranje nije moguće
+        return 0; //guranje nije moguće
     }
 
     public void promijeniVisinu(Graf graf, int vrh) {
@@ -82,7 +82,7 @@ public class GrafPR {
         }
     }
     
-    private KorakDTO snimiStanje(Graf graf, String akcija, int vrh) {
+    private KorakDTO snimiStanje(Graf graf, String akcija, int vrh, Integer povecanjeToka) {
     	
     	List<StanjeBridDTO> bridoviDTO = new ArrayList<>();
     	List<StanjeVrhDTO> vrhoviDTO = new ArrayList<>();
@@ -97,7 +97,16 @@ public class GrafPR {
     		vrhoviDTO.add(sv);
     	}
     	
-    	return new KorakDTO(akcija, vrh, bridoviDTO, vrhoviDTO);
+    	KorakDTO korak = new KorakDTO(akcija, vrh, bridoviDTO, vrhoviDTO);
+
+    	
+    	if ("guraj".equals(akcija)) {
+            korak.setOpis("Operacija PUSH – povećanje toka za " + povecanjeToka);
+        } else if ("promijeniVisinu".equals(akcija)) {
+            korak.setOpis("Operacija RELABEL – promjena visine vrha " + vrh);
+        }
+    	
+    	return korak;
     }
 
     public SimulacijaDTO maksimalniTokSimulacija(Graf graf, int izvor, int ponor) {
@@ -107,13 +116,13 @@ public class GrafPR {
 
         while (vrhSViskomToka(graf) != -1) {
             int vrh = vrhSViskomToka(graf);
-            boolean guranje = guraj(graf, vrh);
+            int guranje = guraj(graf, vrh);
             
-            koraci.add(snimiStanje(graf, "guraj", vrh));
+            koraci.add(snimiStanje(graf, "guraj", vrh, guranje));
             
-            if (!guranje) {
+            if (guranje == 0) {
             	promijeniVisinu(graf, vrh);
-            	koraci.add(snimiStanje(graf, "promijeniVisinu", vrh));
+            	koraci.add(snimiStanje(graf, "promijeniVisinu", vrh, null));
         }
             System.out.println("prošao");
         }

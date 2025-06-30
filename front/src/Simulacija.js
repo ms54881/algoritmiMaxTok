@@ -13,12 +13,13 @@ function Simulacija({ networkInstance, graphData }) {
     const currentNodes = networkInstance.body.data.nodes.get();
 const updatedNodes = currentNodes.map((node) => {
   const { id, ...rest } = node;
+  const numericId = parseInt(id, 10);
   const position = networkInstance.getPosition(id);
-  const stanjeVrh = korak.stanjaVrhova?.[id]; // pristup visini i višku
+  const stanjeVrh = korak.stanjaVrhova?.[numericId]; // pristup visini i višku
   const visina = stanjeVrh?.visina ?? "-";
   const visak = stanjeVrh?.visakToka ?? "-";
 
-    const isAktivanVrh = parseInt(id, 10) === korak.aktivanVrh;
+    const isAktivanVrh = numericId === korak.aktivanVrh;
     const bojaVrh =
       korak.akcija === "promijeniVisinu" && isAktivanVrh
         ? { background: "#ffaaaa", border: "#333" } // Crveni vrh kod relabel
@@ -135,7 +136,7 @@ return (
     {simulationSteps && (
       <div>
         <p className="korak-info">
-          Korak {currentStepIndex + 1} od {simulationSteps.length} – {simulationSteps[currentStepIndex].akcija}
+          Korak {currentStepIndex + 1} od {simulationSteps.length} – {simulationSteps[currentStepIndex].opis}
         </p>
 
         {!simulacijaZavrsena && (
