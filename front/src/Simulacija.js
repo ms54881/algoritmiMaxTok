@@ -51,8 +51,8 @@ const bojaVrh = isAktivanVrh
       label: `${id}`,
       x: position.x,
       y: position.y,
-      color: bojaVrh,
       ...rest,
+      color: bojaVrh,
     };
   });
 
@@ -65,6 +65,12 @@ const newEdges = korak.stanjaBridova
   .map((b) => {
     const newLabel = `${b.tok}/${b.kapacitet}`;
     let color = "#848484";
+
+    const isPovratni = b.kapacitet === 0 && b.tok < 0;
+    if (isPovratni) {
+  color = "#d3d3d3"; // svjetlija siva (možeš koristiti i #cccccc ili #bbbbbb)
+}
+
 
     // Označi aktivni brid plavom ako odgovara trenutno korištenom brid-u u push koraku
     const isAktivanBrid =
