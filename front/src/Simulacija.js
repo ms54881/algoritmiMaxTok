@@ -11,30 +11,48 @@ function Simulacija({ networkInstance, graphData }) {
     if (!networkInstance || !korak || !korak.stanjaBridova) return;
 
     const currentNodes = networkInstance.body.data.nodes.get();
+
+    const virtualLabelNodes = [];
+
 const updatedNodes = currentNodes.map((node) => {
   const { id, ...rest } = node;
   const numericId = parseInt(id, 10);
   const position = networkInstance.getPosition(id);
-  const stanjeVrh = korak.stanjaVrhova?.[numericId]; // pristup visini i višku
+  const stanjeVrh = korak.stanjaVrhova?.[numericId];
   const visina = stanjeVrh?.visina ?? "-";
   const visak = stanjeVrh?.visakToka ?? "-";
 
-    const isAktivanVrh = numericId === korak.aktivanVrh;
-    const bojaVrh =
-      korak.akcija === "promijeniVisinu" && isAktivanVrh
-        ? { background: "#ffaaaa", border: "#333" } // Crveni vrh kod relabel
-        : undefined;
+  const isAktivanVrh = numericId === korak.aktivanVrh;
+  const bojaVrh = isAktivanVrh
+    ? korak.akcija === "promijeniVisinu"
+      ? { background: "#ffaaaa", border: "#333" }
+      : { background: "#ffd9b3", border: "#333" }
+    : undefined;
 
-    return {
-      id,
-      label: `${id} (h=${visina}, e=${visak})`,
-      x: position.x,
-      y: position.y,
-      color: bojaVrh,
-      ...rest,
-    };
+  // Dodaj virtualni čvor za prikaz visine i viška
+  virtualLabelNodes.push({
+    id: `label_${id}`,
+    label: `h=${visina}, e=${visak}`,
+    shape: "text",
+    physics: false,
+    x: position.x,
+    y: position.y - 40, // malo iznad čvora
+    font: { size: 16, color: "#333" },
   });
-    const aktivniVrh = korak.aktivanVrh;
+
+  return {
+    id,
+    label: `${id}`,
+    title: `h=${visina}, e=${visak}`,
+    x: position.x,
+    y: position.y,
+    color: bojaVrh,
+    ...rest,
+  };
+});
+
+  const aktivniVrh = korak.aktivanVrh;
+
   const aktivniBridovi = korak.stanjaBridova.filter(
     (b) =>
       korak.akcija === "guraj" &&
@@ -67,7 +85,7 @@ const updatedNodes = currentNodes.map((node) => {
       };
     });
 
-    networkInstance.body.data.nodes.update(updatedNodes);
+    networkInstance.body.data.nodes.update([...updatedNodes, ...virtualLabelNodes]);
     networkInstance.body.data.edges.update(newEdges);
 };
 
