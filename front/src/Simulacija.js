@@ -114,39 +114,16 @@ const updatedNodes = currentNodes.map((node) => {
     if (!simulationSteps) return;
     const nextIndex = currentStepIndex + 1;
 
-    if (nextIndex < simulationSteps.length) {
-      setCurrentStepIndex(nextIndex);
-      updateGraphWithStep(simulationSteps[nextIndex]);
-    } else if(nextIndex === simulationSteps.length) {
-      const finalStep = simulationSteps[simulationSteps.length - 1];
-    const finalEdges = finalStep.stanjaBridova.map((b) => ({
-      from: b.pocetniVrh,
-      to: b.krajnjiVrh,
-      label: `${b.tok}/${b.kapacitet}`,
-      font: { align: "top", size: 20, color: "#000000" },
-      color: b.tok > 0 ? "green" : "#848484", // Zeleni bridovi za konačni tok
-      arrows: "to",
-    }));
+    if (nextIndex >= simulationSteps.length) {
+      setSimulacijaZavrsena(true);
+      return;
+    } 
+    setCurrentStepIndex(nextIndex);
+    updateGraphWithStep(simulationSteps[nextIndex]);
 
-    const currentNodes = networkInstance.body.data.nodes.get();
-    const updatedNodes = currentNodes.map((node) => {
-      const{ id, label, ...rest} = node;
-      const position = networkInstance.getPosition(id);
-
-      return {
-        id, 
-        label,
-        x:position.x,
-        y:position.y,
-        ...rest,
-      };
-  });
-
-    networkInstance.setData({
-      nodes: updatedNodes,
-      edges: finalEdges,
-    });
-    }
+    if (nextIndex === simulationSteps.length - 1) {
+    setSimulacijaZavrsena(true);
+  }
   };
 
   useEffect(() => {

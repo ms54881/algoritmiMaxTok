@@ -139,10 +139,13 @@ function EdmondKarp() {
       font: { align: "top" },
     }));
 
-    setGraphData({ nodes, edges, izvor: customGraphData.izvor,
-      ponor: customGraphData.ponor
-     });
-    setCustomGraph(false);
+    setGraphData({ nodes, edges, izvor: customGraphData.izvor, ponor: customGraphData.ponor });
+setCustomGraph(false);
+setShowSimulation(false); // resetiraj staru simulaciju
+
+setTimeout(() => {
+  setShowSimulation(true); // pokreni novu simulaciju s novim grafom
+}, 0);
   };
 
   return (
