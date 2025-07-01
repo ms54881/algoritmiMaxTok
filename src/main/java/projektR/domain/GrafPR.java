@@ -46,7 +46,7 @@ public class GrafPR {
             }
         }
 
-        graf.bridovi.add(new Brid(0, -tok, pocetniVrh, krajnjiVrh));
+        graf.bridovi.add(new Brid(0, tok, pocetniVrh, krajnjiVrh));
     }
 
     public int guraj(Graf graf, int vrh) {

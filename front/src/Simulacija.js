@@ -63,7 +63,7 @@ const aktivanBridKrajnji = korak.aktivanBridKrajnji;
 const newEdges = korak.stanjaBridova
   .filter((b) => b.kapacitet > 0 || b.tok < 0)
   .map((b) => {
-    const isPovratni = b.kapacitet < 0; // sad prepoznajemo po negativnom kapacitetu
+    const isPovratni = b.kapacitet === 0; // sad prepoznajemo po negativnom kapacitetu
 const newLabel = `${Math.max(0, b.tok)}/${Math.abs(b.kapacitet)}`; // npr. 0/6
 let color = isPovratni ? "#d3d3d3" : "#848484";
 let fontColor = isPovratni ? "#d3d3d3" : "#000000";
