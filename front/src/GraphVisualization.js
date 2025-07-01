@@ -145,8 +145,12 @@ function GraphVisualization() {
     setGraphData({ nodes, edges, izvor: customGraphData.izvor,
       ponor: customGraphData.ponor
      });
-    setCustomGraph(false); 
-    setShowSimulation(true);
+     setCustomGraph(false);
+  setShowSimulation(false); 
+
+  setTimeout(() => {
+    setShowSimulation(true); 
+  }, 0);
   };
 
   return (
