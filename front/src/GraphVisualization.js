@@ -12,9 +12,6 @@ function GraphVisualization() {
   const [showSimulation, setShowSimulation] = useState(false);
 
   useEffect(() => {
-    if (containerRef.current) {
-  containerRef.current.innerHTML = ""; 
-    }
     if (!graphData) {
       fetch("/api/push-relabel/primjer")
         .then((res) => res.json())
@@ -142,17 +139,11 @@ function GraphVisualization() {
       font: { align: "top" },
     }));
 
+setShowSimulation(false); // reset
 setGraphData({ nodes, edges, izvor: customGraphData.izvor, ponor: customGraphData.ponor });
 setCustomGraph(false);
-setShowSimulation(false); // simulacija će se uključiti automatski kad sve bude spremno
 
   };
-
-  useEffect(() => {
-  if (graphData && networkInstance) {
-    setShowSimulation(true);
-  }
-}, [graphData, networkInstance]);
 
 
   return (
@@ -192,6 +183,7 @@ setShowSimulation(false); // simulacija će se uključiti automatski kad sve bud
           graphData={graphData}
           izvor={graphData?.izvor}
           ponor={graphData?.ponor}
+          startOnMount={false}
          />
       )}
 

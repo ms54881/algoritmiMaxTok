@@ -164,9 +164,9 @@ if (isPovratni) {
   }
   };
 
-  useEffect(() => {
+/*   useEffect(() => {
     handleSimulation();
-  }, []);
+  }, []); */
 
 return (
   <div className="simulacija-container">
