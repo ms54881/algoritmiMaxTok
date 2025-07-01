@@ -63,13 +63,10 @@ const aktivanBridKrajnji = korak.aktivanBridKrajnji;
 const newEdges = korak.stanjaBridova
   .filter((b) => b.kapacitet > 0 || b.tok < 0)
   .map((b) => {
-    const newLabel = `${b.tok}/${b.kapacitet}`;
-    let color = "#848484";
-
-    const isPovratni = b.kapacitet === 0 && b.tok < 0;
-    if (isPovratni) {
-  color = "#d3d3d3"; // svjetlija siva (možeš koristiti i #cccccc ili #bbbbbb)
-}
+    const isPovratni = b.kapacitet < 0; // sad prepoznajemo po negativnom kapacitetu
+const newLabel = `${Math.max(0, b.tok)}/${Math.abs(b.kapacitet)}`; // npr. 0/6
+let color = isPovratni ? "#d3d3d3" : "#848484";
+let fontColor = isPovratni ? "#d3d3d3" : "#000000";
 
 
     // Označi aktivni brid plavom ako odgovara trenutno korištenom brid-u u push koraku
@@ -87,7 +84,7 @@ const newEdges = korak.stanjaBridova
       from: b.pocetniVrh,
       to: b.krajnjiVrh,
       label: newLabel,
-      font: { align: "top", size: 20, color: "#000000" },
+      font: { align: "top", size: 20, color: fontColor},
       color: { color, highlight: color, hover: color, opacity: 1.0 },
       arrows: "to",
     };

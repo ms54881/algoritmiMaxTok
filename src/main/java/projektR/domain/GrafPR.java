@@ -46,7 +46,7 @@ public class GrafPR {
             }
         }
 
-        graf.bridovi.add(new Brid(0, tok, pocetniVrh, krajnjiVrh));
+        graf.bridovi.add(new Brid(0, -tok, pocetniVrh, krajnjiVrh));
     }
 
     public int guraj(Graf graf, int vrh) {
@@ -123,7 +123,9 @@ public class GrafPR {
             int vrh = vrhSViskomToka(graf);
             int guranje = guraj(graf, vrh);
             
-            koraci.add(snimiStanje(graf, "guraj", vrh, guranje));
+            if (guranje > 0) {
+                koraci.add(snimiStanje(graf, "guraj", vrh, guranje));
+            }
             
             if (guranje == 0) {
             	promijeniVisinu(graf, vrh);
@@ -131,6 +133,12 @@ public class GrafPR {
         }
             System.out.println("prošao");
         }
+        
+        // Postavi opis za prvi korak
+        if (!koraci.isEmpty()) {
+            koraci.get(0).setOpis("Inicijalizacija predtoka");
+        }
+        
         int maksimalanTok = graf.vrhovi.get(ponor).visakToka;
         SimulacijaDTO simulacija = new SimulacijaDTO(koraci, maksimalanTok);
         System.out.println("Broj koraka: " + koraci.size());
