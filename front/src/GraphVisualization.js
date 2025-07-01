@@ -142,9 +142,6 @@ function GraphVisualization() {
       font: { align: "top" },
     }));
 
-    setGraphData({ nodes, edges, izvor: customGraphData.izvor,
-      ponor: customGraphData.ponor
-     });
 setGraphData({ nodes, edges, izvor: customGraphData.izvor, ponor: customGraphData.ponor });
 setCustomGraph(false);
 setShowSimulation(false); // simulacija će se uključiti automatski kad sve bude spremno
