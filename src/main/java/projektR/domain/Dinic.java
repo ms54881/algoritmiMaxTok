@@ -10,7 +10,7 @@ import java.util.*;
 @Component
 public class Dinic {
 	
-	private String formirajOpisRazinskogGrafa(int[] razine) {
+	private String formirajOpisRazinskogGrafa(int[] razine) {//metoda za opis razinskog grafa na simulaciji
 		int maxRazina = Arrays.stream(razine)
                 .filter(r -> r >= 0)
                 .max()
@@ -24,12 +24,11 @@ public class Dinic {
 return "Razinski graf izgrađen BFS algoritmom u " + (maxRazina + 1) + raz;
 	}
 	
-	private String formirajOpisAugmentacije(List<List<Integer>> put, int protok) {
+	private String formirajOpisPuta(List<List<Integer>> put, int protok) {//opis puta za simulaciju
 	    StringBuilder sb = new StringBuilder();
 	    sb.append(put.get(0).get(0));
 
-	    // Dodaj sve krajnje čvorove bridova
-	    for (List<Integer> par : put) {
+	    for (List<Integer> par : put) {// dodaj sve krajnje čvorove bridova
 	        int to = par.get(1);
 	        sb.append(" → ").append(to);
 	    }
@@ -38,8 +37,7 @@ return "Razinski graf izgrađen BFS algoritmom u " + (maxRazina + 1) + raz;
 	    return "Povećavajući put pronađen DFS algoritmom: " + sb.toString();
 	}
 	
-	private boolean bfs(GrafDinic grafDinic, int izvor, int ponor) {
-	
+	private boolean bfs(GrafDinic grafDinic, int izvor, int ponor) {//gradnja razinskog grafa uz pomoć bfs
 		
 	    for(int i = 0; i < grafDinic.brojVrhova; i++) {
 	    	grafDinic.razine[i] = -1;
@@ -62,41 +60,40 @@ return "Razinski graf izgrađen BFS algoritmom u " + (maxRazina + 1) + raz;
 	            }
 	        }
 	    }
-	    System.out.println("Nivo-graf završen. Razina ponora: " + grafDinic.razine[ponor]);
+	    System.out.println("Razinski završen. Razina ponora: " + grafDinic.razine[ponor]);
 	    return grafDinic.razine[ponor] != -1;
 	}
 
 
-    private int dfs(GrafDinic grafDinic, int u, int ponor, int tok, int[] pointer, List<List<Integer>> aktivniPut) {
+    private int dfs(GrafDinic grafDinic, int u, int ponor, int tok, int[] pointer, List<List<Integer>> aktivniPut) {//povecavajuci put preko dfs
         if (u == ponor) {
         	System.out.println("Pogođen ponor s protokom: " + tok);
         	return tok;
         }
 
-        for (; pointer[u] < grafDinic.bridovi[u].size(); pointer[u]++) {
+        for (; pointer[u] < grafDinic.bridovi[u].size(); pointer[u]++) {//nastavlja dalje kroz bridove
         	
             BridDinic bridDinic = grafDinic.bridovi[u].get(pointer[u]);
 
-            if (grafDinic.razine[bridDinic.krajnjiVrh] == grafDinic.razine[u]+1 && bridDinic.tok < bridDinic.kapacitet) {
+            if (grafDinic.razine[bridDinic.krajnjiVrh] == grafDinic.razine[u]+1 && bridDinic.tok < bridDinic.kapacitet) {//je li taj vrh na sljedecoj razini i moze li poslati tok
                 int rezidualniKapacitet = bridDinic.kapacitet - bridDinic.tok;
                 System.out.println("DFS pokušava kroz brid " + u + " -> " + bridDinic.krajnjiVrh + " s kapacitetom: " + rezidualniKapacitet);
 
-                aktivniPut.add(List.of(u, bridDinic.krajnjiVrh));
+                aktivniPut.add(List.of(u, bridDinic.krajnjiVrh));//pamti put
                 
-                int pushed = dfs(grafDinic, bridDinic.krajnjiVrh, ponor, Math.min(tok, rezidualniKapacitet), pointer, aktivniPut);
+                int pushed = dfs(grafDinic, bridDinic.krajnjiVrh, ponor, Math.min(tok, rezidualniKapacitet), pointer, aktivniPut);//rekurzivno trazi dalje
 
                 if (pushed > 0) {
-                    bridDinic.tok += pushed;
+                    bridDinic.tok += pushed;//povecaj brid ako je uspjesno
 
-                    // Backward BridDinic
-                    BridDinic povratniBridDinic = grafDinic.bridovi[bridDinic.krajnjiVrh].get(bridDinic.indeksRez);
+                    BridDinic povratniBridDinic = grafDinic.bridovi[bridDinic.krajnjiVrh].get(bridDinic.indeksRez);//povratni brid
 
                     povratniBridDinic.tok -= pushed;
                     System.out.println("Tok " + pushed + " dodan kroz brid " + u + " -> " + bridDinic.krajnjiVrh);
                     return pushed;
                 }
-             // Ako nije uspjelo, ukloni zadnji dodani brid
-                aktivniPut.remove(aktivniPut.size() - 1);
+          
+                aktivniPut.remove(aktivniPut.size() - 1); // ako nije uspjelo, ukloni zadnji dodani brid
             }
         }
 
@@ -104,12 +101,12 @@ return "Razinski graf izgrađen BFS algoritmom u " + (maxRazina + 1) + raz;
     }
 
 
-    private KorakDTO snimiStanje(GrafDinic grafDinic, String akcija, List<List<Integer>> put) {
+    private KorakDTO snimiStanje(GrafDinic grafDinic, String akcija, List<List<Integer>> put) {//stanje svakog koraka
         KorakDTO korak = new KorakDTO();
         korak.setAkcija(akcija);
         korak.setPut(put);
 
-        List<StanjeBridDTO> bridoviDTO = new ArrayList<>();
+        List<StanjeBridDTO> bridoviDTO = new ArrayList<>();//stanej bridova
         for (int i = 0; i < grafDinic.brojVrhova; i++) {
             for (BridDinic brid : grafDinic.bridovi[i]) {
                 StanjeBridDTO stanje = new StanjeBridDTO();
@@ -121,7 +118,7 @@ return "Razinski graf izgrađen BFS algoritmom u " + (maxRazina + 1) + raz;
             }
         }
         korak.setStanjaBridova(bridoviDTO);
-        Map<Integer, Integer> razineMapa = new HashMap<>();
+        Map<Integer, Integer> razineMapa = new HashMap<>();//razine vrhova
         for (int i = 0; i < grafDinic.brojVrhova; i++) {
             razineMapa.put(i, grafDinic.razine[i]);
         }
@@ -130,29 +127,28 @@ return "Razinski graf izgrađen BFS algoritmom u " + (maxRazina + 1) + raz;
         return korak;
     }
     
-    public SimulacijaDTO dinicSimulacija(GrafDinic grafDinic, int izvor, int ponor) {
+    public SimulacijaDTO dinicSimulacija(GrafDinic grafDinic, int izvor, int ponor) {//pokretanje simulacije
     	System.out.println("Pokrenuta simulacija Dinicovog algoritma...");
         List<KorakDTO> koraci = new ArrayList<>();
         int maksimalniTok = 0;
 
         while (bfs(grafDinic, izvor, ponor)) {
-        	System.out.println("Pronađen nivo-graf, pokrećem DFS...");
+        	System.out.println("Pronađen razinski graf, kreće DFS");
         	String opisRazinskog = formirajOpisRazinskogGrafa(grafDinic.razine);
-            koraci.add(snimiStanje(grafDinic, opisRazinskog, null)); // put je null jer nije augmentacija
+            koraci.add(snimiStanje(grafDinic, opisRazinskog, null)); // put je null jer je razinski graf
 
-            int[] pointer = new int[grafDinic.brojVrhova];
+            int[] pointer = new int[grafDinic.brojVrhova];//pokazivac na kojem smo bridu u dfs
             int protok;
 
             while(true) {
             	List<List<Integer>> put = new ArrayList<>();
-            	protok = dfs(grafDinic, izvor, ponor, Integer.MAX_VALUE, pointer, put);
-            	if(protok == 0) break;
+            	protok = dfs(grafDinic, izvor, ponor, Integer.MAX_VALUE, pointer, put);//pokusaj slanja toka 
+            	if(protok == 0) break;//nema vise puteva - prekida
                 maksimalniTok += protok;
                 System.out.println("Dodana augmentacija: " + protok);
                 
 
-                // 3) Dodaj korak s augmentacijom
-                String opisKoraka = formirajOpisAugmentacije(put, protok);
+                String opisKoraka = formirajOpisPuta(put, protok);//opis puta za simulaciju
                 koraci.add(snimiStanje(grafDinic, opisKoraka, put));
               
            

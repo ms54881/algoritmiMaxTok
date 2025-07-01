@@ -6,7 +6,7 @@ function EdmondKarpSimulacija({ networkInstance, graphData }) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [maxFlow, setMaxFlow] = useState(null);
   const pathColors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"];
-  const pathColorIndex = React.useRef(0);  // indeks trenutno korištene boje
+  const pathColorIndex = React.useRef(0);  
   const previousColoredEdges = React.useRef([]);
   const [simulacijaZavrsena, setSimulacijaZavrsena] = useState(false);
 
@@ -26,7 +26,7 @@ const updateGraphWithStep = (korak) => {
     };
   });
 
-  // Defaultno svi bridovi sivi
+
   const allEdges = korak.stanjaBridova
     .filter((b) => b.tok >= 0)
     .map((b) => {
@@ -41,7 +41,6 @@ const updateGraphWithStep = (korak) => {
       };
     });
 
-  // Ako postoji put u ovom koraku – oboji ga posebnom bojom
   const aktivniPut = korak.put || [];
   const boja = pathColors[pathColorIndex.current % pathColors.length];
 
@@ -57,15 +56,13 @@ const updateGraphWithStep = (korak) => {
 
   previousColoredEdges.current = [...previousColoredEdges.current, ...aktivniBridovi];
 
-const allUpdatedEdges = [...allEdges]; // svi bridovi iz koraka
+const allUpdatedEdges = [...allEdges]; 
 
-// Dodaj aktivne bridove, ali ukloni duplikate po (from, to)
 const aktivneIds = aktivniBridovi.map(b => `${b.from}-${b.to}`);
 const stareBoje = previousColoredEdges.current.filter(
   b => !aktivneIds.includes(`${b.from}-${b.to}`)
 );
 
-// Ažuriraj memoriju i stanje grafa
 previousColoredEdges.current = [...stareBoje, ...aktivniBridovi];
 
 networkInstance.setData({
@@ -125,7 +122,6 @@ const handleNextStep = () => {
 
   const nextIndex = currentStepIndex + 1;
 
-  // Ako smo na zadnjem prikazanom koraku, ne idemo dalje
   if (nextIndex >= simulationSteps.length) {
     setSimulacijaZavrsena(true);
     return;
@@ -135,7 +131,6 @@ const handleNextStep = () => {
   updateGraphWithStep(simulationSteps[nextIndex]);
   pathColorIndex.current++;
 
-  // Ako upravo prikazujemo zadnji korak – označi završetak
   if (nextIndex === simulationSteps.length - 1) {
     setSimulacijaZavrsena(true);
   }

@@ -1,5 +1,6 @@
 package projektR.domain;
 
+//klasa Brid za Dinicov algoritam
 public class BridDinic {
     int kapacitet;    
     int tok;          

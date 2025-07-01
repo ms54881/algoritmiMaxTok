@@ -43,7 +43,7 @@ function Dinic() {
     const { nodes, edges, izvor, ponor } = graphData;
     const updatedNodes = nodes.map((node) => ({
       ...node,
-      color: node.id === izvor ? "#ffb3b3" : node.id === ponor ? "#b3ffb3" : "#FFFFFF", // Izvor crven, ponor zelen
+      color: node.id === izvor ? "#ffb3b3" : node.id === ponor ? "#b3ffb3" : "#FFFFFF", 
     }));
     const options = {
       physics: {
@@ -139,10 +139,10 @@ function Dinic() {
 
 setGraphData({ nodes, edges, izvor: customGraphData.izvor, ponor: customGraphData.ponor });
 setCustomGraph(false);
-setShowSimulation(false); // resetiraj staru simulaciju
+setShowSimulation(false); 
 
 setTimeout(() => {
-  setShowSimulation(true); // pokreni novu simulaciju s novim grafom
+  setShowSimulation(true); 
 }, 0);
   };
 

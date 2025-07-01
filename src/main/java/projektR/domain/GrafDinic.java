@@ -3,6 +3,7 @@ package projektR.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+//klasa Graf za Dinicov algoritam
 public class GrafDinic {
 	
 	int brojVrhova;

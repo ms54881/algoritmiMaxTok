@@ -10,7 +10,6 @@ function Simulacija({ networkInstance, graphData }) {
 const updateGraphWithStep = (korak) => {
   if (!networkInstance || !korak || !korak.stanjaBridova) return;
 
-  // 1. Makni sve stare label čvorove
   const existingNodes = networkInstance.body.data.nodes.get();
   const labelNodesToRemove = existingNodes.filter((n) => typeof n.id === "string" && n.id.startsWith("label_"));
   networkInstance.body.data.nodes.remove(labelNodesToRemove.map((n) => n.id));
@@ -20,7 +19,7 @@ const updateGraphWithStep = (korak) => {
   const updatedNodes = existingNodes.map((node) => {
     const { id, ...rest } = node;
     const numericId = parseInt(id, 10);
-    if (isNaN(numericId)) return node; // preskoči stare label_ čvorove
+    if (isNaN(numericId)) return node; 
 
     const position = networkInstance.getPosition(id);
     const stanjeVrh = korak.stanjaVrhova?.[numericId];
@@ -32,10 +31,9 @@ const bojaVrh = isAktivanVrh
   ? korak.akcija === "promijeniVisinu"
     ? { background: "#ffaaaa", border: "#333" }
     : { background: "#ffd9b3", border: "#333" }
-  : { background: "#FFFFFF", border: "#848484" }; // defaultna boja
+  : { background: "#FFFFFF", border: "#848484" }; 
 
 
-    // label čvor postavljen malo iznad i udesno
     virtualLabelNodes.push({
       id: `label_${id}`,
       label: `h=${visina}, e=${visak}`,
@@ -69,18 +67,17 @@ const newEdges = korak.stanjaBridova
     parseInt(e.to, 10) === b.krajnjiVrh
 );
 
-const newLabel = `${Math.max(0, b.tok)}/${Math.abs(b.kapacitet)}`; // npr. 0/6
+const newLabel = `${Math.max(0, b.tok)}/${Math.abs(b.kapacitet)}`; 
 let color = isPovratni ? "#d3d3d3" : "#848484";
 let fontColor = isPovratni ? "#d3d3d3" : "#000000";
 
 if (isPovratni) {
-  color = "#d3d3d3"; // svijetlosiva boja
-  fontColor = "#d3d3d3"; // svijetlosiva oznaka
+  color = "#d3d3d3"; 
+  fontColor = "#d3d3d3"; 
 } else {
-  fontColor = "#000000"; // crna oznaka za obične bridove
+  fontColor = "#000000"; 
 }
 
-    // Označi aktivni brid plavom ako odgovara trenutno korištenom brid-u u push koraku
     const isAktivanBrid =
       korak.akcija === "guraj" &&
       b.pocetniVrh === aktivanBridPocetni &&
@@ -101,7 +98,6 @@ if (isPovratni) {
     };
   });
 
-  // Update grafa
   networkInstance.body.data.nodes.update([...updatedNodes, ...virtualLabelNodes]);
   networkInstance.body.data.edges.update(newEdges);
 };
@@ -114,7 +110,7 @@ if (isPovratni) {
           const allEdges = networkInstance.body.data.edges.get();
     const clearedEdges = allEdges.map(edge => ({
       id: edge.id,
-      label: "", // makni početni kapacitet
+      label: "", 
     }));
     networkInstance.body.data.edges.update(clearedEdges);
 

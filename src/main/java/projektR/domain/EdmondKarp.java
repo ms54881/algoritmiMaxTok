@@ -19,7 +19,7 @@ public class EdmondKarp {
 	public EdmondKarp() {
 	}
 	
-	private String formirajPut(int[] roditelj, int izvor, int ponor, int protokNaPutu) {
+	private String formirajPut(int[] roditelj, int izvor, int ponor, int protokNaPutu) {//put za simulaciju
 	    List<Integer> put = new ArrayList<>();
 	    int trenutni = ponor;
 	    while (trenutni != -1) {
@@ -27,7 +27,6 @@ public class EdmondKarp {
 	        trenutni = roditelj[trenutni];
 	    }
 
-	    // Formatiraj u string: "0 → 1 → 3 → 5 (povećanje za 5)"
 	    StringBuilder sb = new StringBuilder();
 	    for (int i = 0; i < put.size(); i++) {
 	        sb.append(put.get(i));
@@ -35,11 +34,11 @@ public class EdmondKarp {
 	            sb.append(" → ");
 	        }
 	    }
-	    sb.append(" (povećanje toka za ").append(protokNaPutu).append(")");
+	    sb.append(" (povećanje toka za ").append(protokNaPutu).append(")");//opis koraka za simulaciju
 	    return "Povećavajući put pronađen BFS algoritmom: " + sb.toString();
 	}
 	
-	private List<List<Integer>> generirajPutParove(int[] roditelj, int izvor, int ponor) {
+	private List<List<Integer>> generirajPutParove(int[] roditelj, int izvor, int ponor) {//generira listu u obliku parova vrhova za povećavajući put
 	    List<List<Integer>> bridoviNaPutu = new ArrayList<>();
 	    int v = ponor;
 	    while (v != izvor) {
@@ -50,12 +49,12 @@ public class EdmondKarp {
 	    return bridoviNaPutu;
 	}
 
-	private int[] bfsRezidualni(Graf graf, int izvor, int ponor) {
+	private int[] bfs(Graf graf, int izvor, int ponor) {//bfs trazi povecavajuci put
 		
 	    if (graf.bridovi == null || graf.bridovi.isEmpty()) {
 	        throw new IllegalStateException("Lista bridova je prazna ili nije inicijalizirana!");
 	    }
-        // Uzmimo da Graf ima graf.brojVrhova
+        
         int n = graf.brojVrhova;
         boolean[] posjecen = new boolean[n];
         int[] roditelj = new int[n];
@@ -68,19 +67,18 @@ public class EdmondKarp {
         while (!queue.isEmpty()) {
             int u = queue.poll();
 
-            // Za svaki brid u rezidualnom smislu
+            
             for (int i = 0; i < graf.bridovi.size(); i++) {
                 Brid b = graf.bridovi.get(i);
-                // Ako je b.pocetniVrh == u i b.tok < b.kapacitet => ima rezidualnog kapaciteta
-                if (b.pocetniVrh == u && b.tok < b.kapacitet) {
+                
+                if (b.pocetniVrh == u && b.tok < b.kapacitet) {//ako postoji rezidualni kapacitet i vrh jos nije posjecen
                     int v = b.krajnjiVrh;
                     if (!posjecen[v]) {
                         posjecen[v] = true;
                         roditelj[v] = u;
                         queue.add(v);
 
-                        if (v == ponor) {
-                            // Odmah prekid ako došli do ponora
+                        if (v == ponor) {//ako dodemo do ponora pronaden je povecavajuci put
                             return roditelj;
                         }
                     }
@@ -88,36 +86,33 @@ public class EdmondKarp {
             }
         }
 
-        // Nije doseglo ponor
+     
         return null;
     }
 	
-	 private int augmentacija(Graf graf, int[] roditelj, int izvor, int ponor) {
+	 private int slanjeToka(Graf graf, int[] roditelj, int izvor, int ponor) {//trazi min rez kapacitet
 	        int protokNaPutu = Integer.MAX_VALUE;
 	        int v = ponor;
 	        while (v != izvor) {
 	            int u = roditelj[v];
-	            Brid brid = pronadjiBrid(graf, u, v); // pronađi brid (u->v) i vidjeti rezidual = kapacitet - tok
+	            Brid brid = pronadjiBrid(graf, u, v); // pronađi brid (u->v) 
 	            int rezidualni = brid.kapacitet - brid.tok;
 	            protokNaPutu = Math.min(protokNaPutu, rezidualni);
 
 	            v = u;
 	        }
 
-	        // 2) sada ažuriramo bridove
+	        
 	        v = ponor;
-	        while (v != izvor) {
+	        while (v != izvor) {//azuriranje bridova i povratnih bridova
 	            int u = roditelj[v];
 
 	            Brid forward = pronadjiBrid(graf, u, v);
 	            forward.tok += protokNaPutu;
 
-	            // backward brid
 	            Brid backward = pronadjiBrid(graf, v, u);
 	            if (backward == null) {
-	                // ako ne postoji, kreiraj ga s kapacitet = 0, tok negativan?
-	                // ili prema push-relabel stilu, kap=0, tok=0 i sl.
-	                backward = new Brid(0, 0, v, u);
+	                backward = new Brid(0, 0, v, u);//ako ne postoji dodaje novi povratni brid
 	                graf.bridovi.add(backward);
 	            }
 	            backward.tok -= protokNaPutu;
@@ -128,7 +123,7 @@ public class EdmondKarp {
 	        return protokNaPutu;
 	    }
 
-	    private Brid pronadjiBrid(Graf graf, int u, int v) {
+	    private Brid pronadjiBrid(Graf graf, int u, int v) {//trazenje bridova
 	        for (Brid b : graf.bridovi) {
 	            if (b.pocetniVrh == u && b.krajnjiVrh == v) {
 	                return b;
@@ -137,16 +132,14 @@ public class EdmondKarp {
 	        return null;
 	    }
 
-	    /**
-	     * Snima trenutačno stanje bridova i vrhova (ako želite)
-	     */
-	    private KorakDTO snimiStanje(Graf graf, String akcija, List<List<Integer>> put) {
+
+	    private KorakDTO snimiStanje(Graf graf, String akcija, List<List<Integer>> put) {//snima stanje za simulaciju
 	        KorakDTO korak = new KorakDTO();
 	        korak.setAkcija(akcija);
 	        korak.setPut(put);
 	        
 	        // Snimimo stanja bridova
-	        List<StanjeBridDTO> bridoviDTO = new ArrayList<>();
+	        List<StanjeBridDTO> bridoviDTO = new ArrayList<>();//bridovi 
 	        for (Brid b : graf.bridovi) {
 	            StanjeBridDTO bs = new StanjeBridDTO();
 	            bs.setPocetniVrh(b.pocetniVrh);
@@ -166,16 +159,16 @@ public class EdmondKarp {
 		int maksimalniTok = 0;
 		
 		while(true) {
-			int[] roditelj = bfsRezidualni(graf, izvor, ponor);
+			int[] roditelj = bfs(graf, izvor, ponor);
 			if(roditelj == null) {
-				break; //nema augmentirajućeg puta
+				break; //dok ima povecavajuceg puta, ako nema onda break
 			}
 			
-			int protokNaPutu = augmentacija(graf, roditelj, izvor, ponor); //minimalni rezidualni kapacitet na putu
-			maksimalniTok += protokNaPutu;
-			String opisKoraka = formirajPut(roditelj, izvor, ponor, protokNaPutu);
+			int protokNaPutu = slanjeToka(graf, roditelj, izvor, ponor); //minimalni rezidualni kapacitet na putu
+			maksimalniTok += protokNaPutu;//slanje toka
+			String opisKoraka = formirajPut(roditelj, izvor, ponor, protokNaPutu);//opis za simulaciju
 			List<List<Integer>> put = generirajPutParove(roditelj, izvor, ponor);
-			koraci.add(snimiStanje(graf, opisKoraka, put));
+			koraci.add(snimiStanje(graf, opisKoraka, put));//opis za simulaciju
 			
 		}
 		

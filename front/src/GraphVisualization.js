@@ -44,7 +44,7 @@ function GraphVisualization() {
     const { nodes, edges, izvor, ponor } = graphData;
     const updatedNodes = nodes.map((node) => ({
       ...node,
-      color: node.id === izvor ? "#ffb3b3" : node.id === ponor ? "#b3ffb3" : "#FFFFFF", // Izvor crven, ponor zelen
+      color: node.id === izvor ? "#ffb3b3" : node.id === ponor ? "#b3ffb3" : "#FFFFFF", 
     }));
     const options = {
       physics: {
@@ -142,7 +142,7 @@ function GraphVisualization() {
     setGraphData({ nodes, edges, izvor: customGraphData.izvor,
       ponor: customGraphData.ponor
      });
-    setCustomGraph(false); // Zatvori formu
+    setCustomGraph(false); 
   };
 
   return (
