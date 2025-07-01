@@ -12,6 +12,9 @@ function GraphVisualization() {
   const [showSimulation, setShowSimulation] = useState(false);
 
   useEffect(() => {
+    if (containerRef.current) {
+  containerRef.current.innerHTML = ""; 
+    }
     if (!graphData) {
       fetch("/api/push-relabel/primjer")
         .then((res) => res.json())
@@ -125,6 +128,7 @@ function GraphVisualization() {
   };
 
   const handleCustomGraphSubmit = (customGraphData) => {
+    setShowSimulation(false);
     const nodes = Array.from({ length: customGraphData.brojVrhova }, (_, index) => ({
       id: index,
       label: index.toString(),

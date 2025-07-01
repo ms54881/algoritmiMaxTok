@@ -7,7 +7,7 @@ function CustomGraphInput({ onClose, onSubmit }) {
   const [ponor, setPonor] = useState('');
 
   const addBrid = () => {
-    setBridovi([...bridovi, { pocetniVrh: '', krajnjiVrh: '', kapacitet: '' }]);
+    setBridovi([...bridovi, { pocetniVrh: 0, krajnjiVrh: 0, kapacitet: 1 }]);
   };
 
   const handleBridChange = (index, field, value) => {
@@ -142,18 +142,21 @@ function CustomGraphInput({ onClose, onSubmit }) {
         <div key={index} className="brid-inputs">
           <input
             type="number"
+            min="0"
             placeholder="Početni vrh"
-            value={brid.pocetniVrh === "" ? "" : brid.pocetniVrh}
+            value={brid.pocetniVrh}
             onChange={(e) => handleBridChange(index, 'pocetniVrh', e.target.value)}
           />
           <input
             type="number"
+            min="0"
             placeholder="Krajnji vrh"
-            value={brid.krajnjiVrh === "" ? "" : brid.krajnjiVrh}
+            value={brid.krajnjiVrh}
             onChange={(e) => handleBridChange(index, 'krajnjiVrh', e.target.value)}
           />
           <input
             type="number"
+            min="1"
             placeholder="Kapacitet"
             value={brid.kapacitet}
             onChange={(e) => handleBridChange(index, 'kapacitet', e.target.value)}
