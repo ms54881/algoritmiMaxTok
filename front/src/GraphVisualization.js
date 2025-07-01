@@ -128,7 +128,6 @@ function GraphVisualization() {
   };
 
   const handleCustomGraphSubmit = (customGraphData) => {
-    setShowSimulation(false);
     const nodes = Array.from({ length: customGraphData.brojVrhova }, (_, index) => ({
       id: index,
       label: index.toString(),
@@ -147,6 +146,7 @@ function GraphVisualization() {
       ponor: customGraphData.ponor
      });
     setCustomGraph(false); 
+    setShowSimulation(true);
   };
 
   return (
