@@ -145,13 +145,18 @@ function GraphVisualization() {
     setGraphData({ nodes, edges, izvor: customGraphData.izvor,
       ponor: customGraphData.ponor
      });
-     setCustomGraph(false);
-  setShowSimulation(false); 
+setGraphData({ nodes, edges, izvor: customGraphData.izvor, ponor: customGraphData.ponor });
+setCustomGraph(false);
+setShowSimulation(false); // simulacija će se uključiti automatski kad sve bude spremno
 
-  setTimeout(() => {
-    setShowSimulation(true); 
-  }, 0);
   };
+
+  useEffect(() => {
+  if (graphData && networkInstance) {
+    setShowSimulation(true);
+  }
+}, [graphData, networkInstance]);
+
 
   return (
     <div className="main-container">
