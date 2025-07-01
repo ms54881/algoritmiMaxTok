@@ -139,10 +139,13 @@ function GraphVisualization() {
       font: { align: "top" },
     }));
 
-setShowSimulation(false); // reset
-setGraphData({ nodes, edges, izvor: customGraphData.izvor, ponor: customGraphData.ponor });
+    setGraphData({ nodes, edges, izvor: customGraphData.izvor, ponor: customGraphData.ponor });
 setCustomGraph(false);
+setShowSimulation(false); 
 
+setTimeout(() => {
+  setShowSimulation(true);
+}, 0);
   };
 
 
