@@ -12,6 +12,7 @@ function GraphVisualization() {
   const [showSimulation, setShowSimulation] = useState(false);
 
   useEffect(() => {
+    if(!graphData) {
       fetch("/api/push-relabel/primjer")
         .then((res) => res.json())
         .then((data) => {
@@ -34,7 +35,8 @@ function GraphVisualization() {
           setGraphData({ nodes, edges, izvor, ponor });
         })
         .catch((err) => console.error("Greška pri dohvatu grafa:", err));
-    }, []);
+      }
+      }, [graphData]);
 
   useEffect(() => {
     if (!graphData) return;
@@ -141,9 +143,6 @@ function GraphVisualization() {
 setCustomGraph(false);
 setShowSimulation(false); 
 
-setTimeout(() => {
-  setShowSimulation(true);
-}, 0);
   };
 
 
@@ -162,7 +161,7 @@ setTimeout(() => {
         <button className="lock-button" onClick={handleLockPositions}>
           Zaključaj čvorove
         </button>
-        {!showSimulation && (
+        {!showSimulation && graphData && (
           <button
             className="simulation-button"
             onClick={() => setShowSimulation(true)}

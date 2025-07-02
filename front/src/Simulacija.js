@@ -164,12 +164,13 @@ if (isPovratni) {
   }
   };
 
- useEffect(() => {
-    handleSimulation();
-  }, []); 
-
 return (
   <div className="simulacija-container">
+        {!simulationSteps && (
+      <button className="simulation-button" onClick={handleSimulation}>
+        Pokreni simulaciju
+      </button>
+    )}
     {simulationSteps && (
       <div>
         <p className="korak-info">
