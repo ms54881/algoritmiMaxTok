@@ -10,6 +10,8 @@ function GraphVisualization() {
   const [networkInstance, setNetworkInstance] = useState(null);
   const [graphData, setGraphData] = useState(null);
   const [showSimulation, setShowSimulation] = useState(false);
+  const [startSimulation, setStartSimulation] = useState(false);
+
 
   useEffect(() => {
     if(!graphData) {
@@ -164,7 +166,9 @@ setShowSimulation(false);
         {!showSimulation && graphData && (
           <button
             className="simulation-button"
-            onClick={() => setShowSimulation(true)}
+            onClick={() => {setShowSimulation(true);
+              setStartSimulation(true); 
+            }}
           >
             Pokreni simulaciju
           </button>
@@ -183,7 +187,7 @@ setShowSimulation(false);
           graphData={graphData}
           izvor={graphData?.izvor}
           ponor={graphData?.ponor}
-          startOnMount={false}
+          startSimulation={startSimulation}
          />
       )}
 

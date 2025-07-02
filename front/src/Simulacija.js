@@ -1,7 +1,7 @@
 import React,{ useEffect, useState } from "react";
 import "./Simulacija.css";
 
-function Simulacija({ networkInstance, graphData }) {
+function Simulacija({ networkInstance, graphData, startSimulation }) {
   const [simulationSteps, setSimulationSteps] = useState(null);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [maxFlow, setMaxFlow] = useState(null);
@@ -67,7 +67,13 @@ const newEdges = korak.stanjaBridova
     parseInt(e.to, 10) === b.krajnjiVrh
 );
 
-const newLabel = `${Math.max(0, b.tok)}/${Math.abs(b.kapacitet)}`; 
+let newLabel;
+if (b.kapacitet === 0 && b.tok < 0 && currentStepIndex === 0) {
+  
+  newLabel = `0/${Math.abs(b.tok)}`;
+} else {
+  newLabel = `${Math.max(0, b.tok)}/${Math.abs(b.kapacitet)}`;
+} 
 let color = isPovratni ? "#d3d3d3" : "#848484";
 let fontColor = isPovratni ? "#d3d3d3" : "#000000";
 
@@ -101,6 +107,12 @@ if (isPovratni) {
   networkInstance.body.data.nodes.update([...updatedNodes, ...virtualLabelNodes]);
   networkInstance.body.data.edges.update(newEdges);
 };
+
+useEffect(() => {
+  if (startSimulation) {
+    handleSimulation();
+  }
+}, [startSimulation]);
 
 
   const handleSimulation = async () => {
