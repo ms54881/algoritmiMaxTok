@@ -59,7 +59,13 @@ const aktivanBridPocetni = korak.aktivanBridPocetni;
 const aktivanBridKrajnji = korak.aktivanBridKrajnji;
 
 const newEdges = korak.stanjaBridova
-  .filter((b) => b.kapacitet > 0 || b.tok < 0)
+  .filter((b) =>
+    (b.kapacitet > 0) || 
+    (b.tok < 0 && graphData.edges.some(
+      (e) => parseInt(e.to, 10) === b.pocetniVrh &&
+             parseInt(e.from, 10) === b.krajnjiVrh
+    ) === false)  // povratni bridovi s tok < 0 koji nisu originalni
+  )
   .map((b) => {
     const isPovratni = !graphData.edges.some(
   (e) =>
@@ -178,11 +184,7 @@ useEffect(() => {
 
 return (
   <div className="simulacija-container">
-        {!simulationSteps && (
-      <button className="simulation-button" onClick={handleSimulation}>
-        Pokreni simulaciju
-      </button>
-    )}
+
     {simulationSteps && (
       <div>
         <p className="korak-info">
